@@ -9,3 +9,5 @@ authRouter
   .post('/signin', signin)
 
   .get('/logout', logout)
+
+module.exports = authRouter
