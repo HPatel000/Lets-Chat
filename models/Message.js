@@ -12,6 +12,12 @@ const messageSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: 'Message',
   },
+  reactions: [
+    {
+      react: String,
+      user: { type: mongoose.Types.ObjectId, ref: 'User' },
+    },
+  ],
   date: {
     type: Date,
     default: Date.now,
