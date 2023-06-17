@@ -1,6 +1,29 @@
 const Chat = require('../models/Chat')
 const Message = require('../models/Message')
 
+exports.getUserChats = async (req, res, next) => {
+  try {
+    const user = req.user._id
+    const chat = await Chat.find({})
+      .or([{ user1: user }, { user2: user }])
+      .slice('messages', -1)
+      .populate('user1', 'name')
+      .populate('user2', 'name')
+      .populate({
+        path: 'messages',
+        select: 'message sender',
+        populate: {
+          path: 'sender',
+          select: 'name',
+        },
+      })
+
+    return res.status(200).json(chat)
+  } catch (e) {
+    return res.status(500).json({ error: 'something went wrong!' })
+  }
+}
+
 exports.getMessages = async (req, res) => {
   const sender = req.user._id
   const sentTo = req.body.sentTo
@@ -10,28 +33,28 @@ exports.getMessages = async (req, res) => {
         { $and: [{ user1: sentTo, user2: sender }] },
         { $and: [{ user1: sender, user2: sentTo }] },
       ])
-      .populate('user1', 'name -_id')
-      .populate('user2', 'name -_id')
+      .populate('user1', 'name')
+      .populate('user2', 'name')
       .populate({
         path: 'messages',
         populate: [
           {
             path: 'sender',
-            select: 'name -_id',
+            select: 'name',
           },
           {
             path: 'replyOf',
             select: '-reactions',
             populate: {
               path: 'sender',
-              select: 'name -_id',
+              select: 'name',
             },
           },
           {
             path: 'reactions',
             populate: {
               path: 'user',
-              select: 'name -_id',
+              select: 'name',
             },
           },
         ],

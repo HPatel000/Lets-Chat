@@ -5,6 +5,7 @@ const userRouter = require('./routes/user')
 const cors = require('cors')
 const chatRouter = require('./routes/chat')
 const authRouter = require('./routes/auth')
+const groupChatRouter = require('./routes/groupchat')
 
 const app = new express()
 app.use(express.json())
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
 app.use('/auth', authRouter)
 app.use('/user', userRouter)
 app.use('/chat', chatRouter)
+app.use('/group', groupChatRouter)
 
 app.listen(5000, () => {
   console.log('SERVER STARTED AT PORT 5000')
