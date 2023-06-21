@@ -33,7 +33,7 @@ exports.login = async (req, res) => {
 
 exports.signin = async (req, res) => {
   try {
-    const { name, username, email, password, role } = req.body
+    const { name, username, email, password } = req.body
 
     const checkUser = await User.find({})
       .or([{ username: username, email: email }])
@@ -48,7 +48,6 @@ exports.signin = async (req, res) => {
       username,
       email,
       password,
-      role,
     })
 
     sendTokenResponse(user, 200, res)
@@ -88,6 +87,6 @@ const sendTokenResponse = (user, statusCode, res) => {
 
   res.status(statusCode).cookie('token', token, options).json({
     success: true,
-    token,
+    data: user,
   })
 }

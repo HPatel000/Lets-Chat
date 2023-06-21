@@ -25,12 +25,9 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Password is required'],
-    minlength: [5, 'Minimin length requried for password is 5'],
+    minlength: [8, 'Min length requried for password is 8'],
+    maxlength: [20, 'Max length requried for password is 20'],
     select: false,
-  },
-  role: {
-    type: String,
-    default: 'user',
   },
   createdAt: {
     type: Date,
