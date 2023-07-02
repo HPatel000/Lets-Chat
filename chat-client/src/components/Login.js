@@ -24,13 +24,14 @@ const Login = () => {
       password: loginForm.password,
     }
     const res = await axios.post('/auth/login', logInJson)
-    if (res.status == 200) {
+    if (res.status === 200) {
       dispatch(login(res.data.data))
       navigate('/')
     }
   }
   return (
     <div className='authentication'>
+      <h1>Log In</h1>
       <form onSubmit={onLogIn}>
         <label>username</label>
         <input
@@ -43,11 +44,14 @@ const Login = () => {
         <input
           onChange={onInputChange}
           name='password'
+          type='password'
           value={loginForm.password}
           required
         />
         <button type='submit'>Log In</button>
-        <Link to='/signin'>Don't have an account? Sign In</Link>
+        <Link className='auth-redirectlink' to='/signin'>
+          Don't have an account? Sign In
+        </Link>
       </form>
     </div>
   )

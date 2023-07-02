@@ -28,46 +28,27 @@ const Signin = () => {
       password: signinForm.password,
     }
     const res = await axios.post('/auth/signin', signinJson)
-    if (res.status == 200) {
+    if (res.status === 200) {
       dispatch(login(res.data.data))
       navigate('/')
     }
   }
   return (
     <div className='authentication'>
+      <h1>Sign In</h1>
       <form onSubmit={onSignIn}>
         <label>name</label>
-        <input
-          onChange={onInputChange}
-          name='name'
-          value={signinForm.name}
-          required
-        />
+        <input name='name' required />
         <label>username</label>
-        <input
-          onChange={onInputChange}
-          name='username'
-          value={signinForm.username}
-          required
-        />
+        <input name='username' required />
         <label>email</label>
-        <input
-          onChange={onInputChange}
-          name='email'
-          type='email'
-          value={signinForm.email}
-          required
-        />
+        <input name='email' type='email' required />
         <label>password</label>
-        <input
-          onChange={onInputChange}
-          name='password'
-          minLength={5}
-          value={signinForm.password}
-          required
-        />
-        <button type='submit'>Log In</button>
-        <Link to='/login'>Already have an account? Log In</Link>
+        <input name='password' type='password' minLength={5} required />
+        <button type='submit'>Sign In</button>
+        <Link className='auth-redirectlink' to='/login'>
+          Already have an account? Log In
+        </Link>
       </form>
     </div>
   )

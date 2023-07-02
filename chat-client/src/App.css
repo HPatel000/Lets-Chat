@@ -3,3 +3,143 @@
     #864879
     #E9A6A6
 */
+
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200;300;400;500;600;700;800&display=swap');
+
+:root {
+  --c1: rgb(31, 29, 54);
+  --c2: rgb(63, 51, 81);
+  --c3: rgb(134, 72, 121);
+  --c4: rgb(233, 166, 166);
+  --C1: 31, 29, 54;
+  --C2: 63, 51, 81;
+  --C3: 134, 72, 121;
+  --C4: 233, 166, 166;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+::placeholder {
+  color: rgba(var(--C4), 0.5);
+}
+
+html {
+  font-family: Dosis, sans-serif;
+  font-size: 85%;
+}
+
+body {
+  background-color: var(--c1);
+  font-size: 1.5rem;
+  color: var(--c4);
+}
+
+input,
+textarea {
+  display: block;
+  border: none;
+  border: 1px solid var(--c4);
+  color: var(--c4);
+  background: none;
+  border-radius: 0.2rem;
+  padding: 0.2rem 0.5rem;
+}
+
+.authentication {
+  text-transform: capitalize;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 2rem;
+  height: 85vh;
+}
+
+.authentication input {
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.authentication button {
+  display: block;
+  width: 100%;
+  margin: 2rem 0;
+  background-color: var(--c4);
+  border: 1px solid var(--c3);
+  border-radius: 0.5rem;
+  font-size: 1.3rem;
+  color: var(--c1);
+  padding: 1rem 2rem;
+}
+
+.auth-redirectlink {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  font-size: 1rem;
+  color: var(--c3);
+}
+
+.home {
+  display: flex;
+  flex-direction: column;
+  height: 98vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 2rem;
+}
+
+.chat-section {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.chat-bubble {
+  border: 1px solid var(--c2);
+  color: whitesmoke;
+  background-color: rgba(var(--C2), 0.1);
+  width: 65%;
+  margin: 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+.chat-bubble-header {
+  background-color: rgba(var(--C2), 0.5);
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2rem 0.5rem;
+}
+
+.chat-bubble-msg {
+  padding: 0.5rem 1rem;
+}
+
+.chat-bubble-left {
+  border-radius: 0rem 0.5rem 0.5rem 0.5rem;
+  float: left;
+}
+
+.chat-bubble-right {
+  border-radius: 0.5rem 0rem 0.5rem 0.5rem;
+  float: right;
+}
+
+.msg-send {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.5rem 1rem;
+}
+
+.msg-send textarea {
+  width: 100%;
+}

@@ -3,14 +3,14 @@ import './App.css'
 import Login from './components/Login'
 import Signin from './components/Signin'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Home from './components/Home'
 import ProtectedRoute from './components/ProtectedRoute'
+import ChatPage from './components/ChatPage'
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
       <ProtectedRoute>
-        <Home />
+        <ChatPage />
       </ProtectedRoute>
     ),
   },
