@@ -1,5 +1,6 @@
 const express = require('express')
-const { login, signin, logout } = require('../controllers/auth')
+const { login, signin, logout, checkUser } = require('../controllers/auth')
+const { authenticate } = require('../middlewares/auth')
 
 const authRouter = express.Router()
 
@@ -9,5 +10,7 @@ authRouter
   .post('/signin', signin)
 
   .get('/logout', logout)
+
+  .get('/checkuser', authenticate, checkUser)
 
 module.exports = authRouter

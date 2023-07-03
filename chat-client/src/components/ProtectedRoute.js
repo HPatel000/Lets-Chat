@@ -1,15 +1,36 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { Navigate, useLocation } from 'react-router-dom'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Navigate } from 'react-router-dom'
+import { login } from '../GlobalState/authReducer'
 
 const ProtectedRoute = ({ children }) => {
-  const user = useSelector((state) => state.authReducer)
-  let location = useLocation()
+  const dispatch = useDispatch()
+  const [user, setUser] = useState(null)
+  const [isLoading, setLoading] = useState(true)
 
-  if (!user) {
-    return <Navigate to='/login' state={{ from: location }} replace />
-  }
-  return children
+  useEffect(() => {
+    axios
+      .get('/auth/checkuser')
+      .then((res) => {
+        if (res.data) {
+          dispatch(login(res.data))
+          setUser(res.data)
+          setLoading(false)
+        }
+      })
+      .catch((e) => {
+        dispatch(login(null))
+        setLoading(false)
+      })
+  }, [])
+
+  return (
+    <>
+      {!isLoading && user && children}
+      {!isLoading && !user && <Navigate to='/login' replace />}
+    </>
+  )
 }
 
 export default ProtectedRoute

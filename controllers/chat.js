@@ -25,14 +25,11 @@ exports.getUserChats = async (req, res, next) => {
 }
 
 exports.getMessages = async (req, res) => {
-  const sender = req.user._id
-  const sentTo = req.body.sentTo
+  const id = req.params.id
+  const user = req.user._id
   try {
-    const chat = await Chat.find({})
-      .or([
-        { $and: [{ user1: sentTo, user2: sender }] },
-        { $and: [{ user1: sender, user2: sentTo }] },
-      ])
+    const chat = await Chat.findById(id)
+      .or([{ user1: user }, { user2: user }])
       .populate('user1', 'name')
       .populate('user2', 'name')
       .populate({
@@ -67,20 +64,18 @@ exports.getMessages = async (req, res) => {
 
 exports.saveMessage = async (req, res) => {
   try {
-    const { sentTo, replyOf, message } = req.body
+    const { id, replyOf, message } = req.body
     const sender = req.user._id
-
     const newMessage = await Message.create({
       message,
       sender,
       replyOf,
     })
 
-    const chat = await Chat.findOne({}).or([
-      { $and: [{ user1: sentTo, user2: sender }] },
-      { $and: [{ user1: sender, user2: sentTo }] },
+    const chat = await Chat.findById(id).or([
+      { user1: sender },
+      { user2: sender },
     ])
-
     if (chat) {
       chat.messages.push(newMessage)
       await chat.save()

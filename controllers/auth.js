@@ -71,6 +71,13 @@ exports.logout = async (req, res) => {
   }
 }
 
+exports.checkUser = async (req, res) => {
+  if (req.user) {
+    return res.status(200).json(req.user)
+  }
+  return res.status(401).json({})
+}
+
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
   // Create token

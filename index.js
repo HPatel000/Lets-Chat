@@ -8,6 +8,12 @@ const authRouter = require('./routes/auth')
 const groupChatRouter = require('./routes/groupchat')
 
 const app = new express()
+const server = app.listen(5000, () => {
+  console.log('SERVER STARTED AT PORT 5000')
+})
+const io = require('socket.io')(server)
+app.set('socketio', io)
+
 app.use(express.json())
 app.use(cors())
 app.use(cookieParser())
@@ -22,7 +28,3 @@ app.use('/auth', authRouter)
 app.use('/user', userRouter)
 app.use('/chat', chatRouter)
 app.use('/group', groupChatRouter)
-
-app.listen(5000, () => {
-  console.log('SERVER STARTED AT PORT 5000')
-})

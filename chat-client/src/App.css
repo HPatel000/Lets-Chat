@@ -15,6 +15,7 @@
   --C2: 63, 51, 81;
   --C3: 134, 72, 121;
   --C4: 233, 166, 166;
+  --chat-Bubble-Radius: 0.5rem;
 }
 
 * {
@@ -97,16 +98,27 @@ textarea {
   padding: 2rem;
 }
 
+.chat-header {
+  color: var(--c1);
+  background-color: var(--c4);
+  /* border-radius: 0 0 1rem 1rem; */
+  padding: 1rem 2rem;
+}
+
 .chat-section {
+  /* margin-top: 1rem; */
   flex-grow: 1;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .chat-bubble {
   border: 1px solid var(--c2);
   color: whitesmoke;
   background-color: rgba(var(--C2), 0.1);
-  width: 65%;
+  max-width: 80%;
+  width: max-content;
   margin: 0.5rem 1rem;
   font-size: 1rem;
 }
@@ -114,6 +126,7 @@ textarea {
 .chat-bubble-header {
   background-color: rgba(var(--C2), 0.5);
   display: flex;
+  gap: 0.5rem;
   justify-content: space-between;
   padding: 0.2rem 0.5rem;
 }
@@ -123,15 +136,22 @@ textarea {
 }
 
 .chat-bubble-left {
-  border-radius: 0rem 0.5rem 0.5rem 0.5rem;
-  float: left;
+  border-radius: 0rem var(--chat-Bubble-Radius) var(--chat-Bubble-Radius)
+    var(--chat-Bubble-Radius);
+  align-self: flex-start;
 }
 
+.chat-bubble-left .chat-bubble-header {
+  border-radius: 0rem var(--chat-Bubble-Radius) 0rem 0rem;
+}
 .chat-bubble-right {
-  border-radius: 0.5rem 0rem 0.5rem 0.5rem;
-  float: right;
+  border-radius: var(--chat-Bubble-Radius) 0rem var(--chat-Bubble-Radius)
+    var(--chat-Bubble-Radius);
+  align-self: flex-end;
 }
-
+.chat-bubble-right .chat-bubble-header {
+  border-radius: var(--chat-Bubble-Radius) 0rem 0rem 0rem;
+}
 .msg-send {
   display: flex;
   justify-content: space-between;

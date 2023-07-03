@@ -10,7 +10,7 @@ const { authenticate } = require('../middlewares/auth')
 const chatRouter = express.Router()
 
 chatRouter.get('/', authenticate, getUserChats)
-chatRouter.post('/msg/get', authenticate, getMessages)
+chatRouter.get('/msg/get/:id', authenticate, getMessages)
 chatRouter.post('/msg/save', authenticate, saveMessage)
 chatRouter.post('/msg/react', authenticate, reactToMsg)
 
