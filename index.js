@@ -11,11 +11,16 @@ const app = new express()
 const server = app.listen(5000, () => {
   console.log('SERVER STARTED AT PORT 5000')
 })
-const io = require('socket.io')(server)
+const io = require('socket.io')(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
+})
 app.set('socketio', io)
 
 app.use(express.json())
-app.use(cors())
+app.use(cors({ orgin: 'http://localhost:3000' }))
 app.use(cookieParser())
 
 connectDB()

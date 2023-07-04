@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import SendIcon from '@mui/icons-material/Send'
+import io from 'socket.io-client'
 import axios from 'axios'
+const socket = io.connect('http://localhost:5000')
 
 const Chat = ({ chatID }) => {
   const state = useSelector((state) => state.authReducer)
@@ -11,8 +13,10 @@ const Chat = ({ chatID }) => {
   const [msgText, setMsgText] = useState('')
 
   useEffect(() => {
-    getAllMessages()
-  }, [chatID])
+    getAllMessages().then((res) => {
+      socketMsgs()
+    })
+  }, [])
 
   const getAllMessages = async () => {
     try {
@@ -30,6 +34,19 @@ const Chat = ({ chatID }) => {
     } catch (e) {
       setChat({})
     }
+  }
+
+  const socketMsgs = () => {
+    socket.on(`${chatID}`, (payload) => {
+      if (chat) {
+        setChat((prevChat) => {
+          return {
+            ...prevChat,
+            messages: [...prevChat.messages, payload],
+          }
+        })
+      }
+    })
   }
 
   const onMsgChange = (e) => {

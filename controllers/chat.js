@@ -79,15 +79,33 @@ exports.saveMessage = async (req, res) => {
     if (chat) {
       chat.messages.push(newMessage)
       await chat.save()
-      return res.status(200).json({ success: true, data: 'Message saved' })
     } else {
-      await Chat.create({
-        user1: sender,
-        user2: sentTo,
-        messages: [newMessage],
-      })
-      return res.status(200).json({ success: true, data: 'Message saved' })
+      return res.status(404).json({ error: 'no chat found!' })
     }
+
+    const msg = await Message.findById(newMessage._id).populate([
+      {
+        path: 'sender',
+        select: 'name',
+      },
+      {
+        path: 'replyOf',
+        select: '-reactions',
+        populate: {
+          path: 'sender',
+          select: 'name',
+        },
+      },
+      {
+        path: 'reactions',
+        populate: {
+          path: 'user',
+          select: 'name',
+        },
+      },
+    ])
+    req.app.get('socketio').emit(`${id}`, msg)
+    return res.status(200).json({ success: true, data: 'Message saved' })
   } catch (e) {
     return res.status(500).json({ error: 'something went wrong!' })
   }
