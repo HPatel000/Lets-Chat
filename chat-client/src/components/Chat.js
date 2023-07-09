@@ -3,13 +3,15 @@ import { useSelector } from 'react-redux'
 import SendIcon from '@mui/icons-material/Send'
 import io from 'socket.io-client'
 import axios from 'axios'
+import { useLocation } from 'react-router-dom'
 const socket = io.connect('http://localhost:5000')
 
-const Chat = ({ chatID }) => {
+const Chat = () => {
   const state = useSelector((state) => state.authReducer)
+  const location = useLocation()
 
   const [chat, setChat] = useState({})
-  const [user2, setUser2] = useState('')
+  const [Receiver, setReceiver] = useState('')
   const [msgText, setMsgText] = useState('')
 
   useEffect(() => {
@@ -20,13 +22,13 @@ const Chat = ({ chatID }) => {
 
   const getAllMessages = async () => {
     try {
-      const res = await axios.get(`/chat/msg/get/${chatID}`)
+      const res = await axios.get(`/chat/msg/get/${location.state.id}`)
       if (res.data.chat) {
         setChat(res.data.chat)
         if (res.data.chat.user1._id === state.user._id) {
-          setUser2(res.data.chat.user2)
+          setReceiver(res.data.chat.user2)
         } else {
-          setUser2(res.data.chat.user1)
+          setReceiver(res.data.chat.user1)
         }
       } else {
         setChat({})
@@ -37,7 +39,7 @@ const Chat = ({ chatID }) => {
   }
 
   const socketMsgs = () => {
-    socket.on(`${chatID}`, (payload) => {
+    socket.on(`${location.state.id}`, (payload) => {
       if (chat) {
         setChat((prevChat) => {
           return {
@@ -54,7 +56,7 @@ const Chat = ({ chatID }) => {
   }
 
   const onSendMsg = async (e) => {
-    e.preventDefault()
+    // e.preventDefault()
     const json = {
       id: chat._id,
       message: msgText,
@@ -63,12 +65,17 @@ const Chat = ({ chatID }) => {
     if (res.data.success) {
       setMsgText('')
     }
-    console.log(res)
+  }
+
+  const onKeyUpTextArea = async (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      onSendMsg()
+    }
   }
   return (
-    <>
+    <div className='chat'>
       <div className='chat-header'>
-        <h2>{user2 && user2.name}</h2>
+        <h2>{Receiver && Receiver.name}</h2>
       </div>
       <div className='chat-section'>
         {chat.messages &&
@@ -103,12 +110,13 @@ const Chat = ({ chatID }) => {
           placeholder='Type something...'
           name='msgText'
           value={msgText}
+          onKeyUp={onKeyUpTextArea}
         ></textarea>
-        <div className='msg-send-icon' onClick={onSendMsg}>
+        <button type='submit' className='msg-send-icon' onClick={onSendMsg}>
           <SendIcon />
-        </div>
+        </button>
       </div>
-    </>
+    </div>
   )
 }
 

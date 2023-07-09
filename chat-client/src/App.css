@@ -98,6 +98,21 @@ textarea {
   padding: 2rem;
 }
 
+.single-chat {
+  color: var(--c4);
+  margin: 1rem 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: rgba(var(--C4), 0.1);
+  border: 1px solid var(--c4);
+  border-radius: 0.5rem;
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  height: 99vh;
+}
+
 .chat-header {
   color: var(--c1);
   background-color: var(--c4);
@@ -148,9 +163,11 @@ textarea {
   border-radius: var(--chat-Bubble-Radius) 0rem var(--chat-Bubble-Radius)
     var(--chat-Bubble-Radius);
   align-self: flex-end;
+  background-color: rgba(var(--C2), 0.5);
 }
 .chat-bubble-right .chat-bubble-header {
   border-radius: var(--chat-Bubble-Radius) 0rem 0rem 0rem;
+  background-color: rgba(var(--C1), 0.9);
 }
 .msg-send {
   display: flex;
@@ -162,4 +179,10 @@ textarea {
 
 .msg-send textarea {
   width: 100%;
+}
+
+.msg-send-icon {
+  background: none;
+  border: none;
+  color: var(--c4);
 }
