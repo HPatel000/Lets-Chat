@@ -24,6 +24,26 @@ exports.getUserChats = async (req, res, next) => {
   }
 }
 
+exports.getChatIDFromIds = async (req, res) => {
+  const sender = req.params.sender
+  const receiver = req.user._id
+  try {
+    let chat = await Chat.find({}).or([
+      { $and: [{ user1: receiver, user2: sender }] },
+      { $and: [{ user1: sender, user2: receiver }] },
+    ])
+    if (chat.length == 0) {
+      chat = await Chat.create({
+        user1: sender,
+        user2: receiver,
+      })
+    }
+    return res.status(200).json({ chat })
+  } catch (e) {
+    return res.status(500).json({ error: 'something went wrong!' })
+  }
+}
+
 exports.getMessages = async (req, res) => {
   const id = req.params.id
   const user = req.user._id

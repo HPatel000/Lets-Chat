@@ -15,14 +15,31 @@ const Chat = () => {
   const [msgText, setMsgText] = useState('')
 
   useEffect(() => {
-    getAllMessages().then((res) => {
-      socketMsgs()
-    })
+    getAllMessages()
   }, [])
 
-  const getAllMessages = async () => {
+  useEffect(() => {
+    socketMsgs()
+  }, [chat])
+
+  const getChatID = async () => {
     try {
-      const res = await axios.get(`/chat/msg/get/${location.state.id}`)
+      const res = await axios.get(`/chat/${location.state.id}`)
+      if (res.data) {
+        return res.data.chat[0]._id
+      }
+      return null
+    } catch (e) {
+      console.error(e)
+      return null
+    }
+  }
+
+  const getAllMessages = async () => {
+    const chatId = await getChatID()
+    if (!chatId) return
+    try {
+      const res = await axios.get(`/chat/msg/get/${chatId}`)
       if (res.data.chat) {
         setChat(res.data.chat)
         if (res.data.chat.user1._id === state.user._id) {
@@ -34,12 +51,12 @@ const Chat = () => {
         setChat({})
       }
     } catch (e) {
-      setChat({})
+      console.error(e)
     }
   }
 
   const socketMsgs = () => {
-    socket.on(`${location.state.id}`, (payload) => {
+    socket.on(`${chat._id}`, (payload) => {
       if (chat) {
         setChat((prevChat) => {
           return {

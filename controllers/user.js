@@ -1,25 +1,28 @@
 const User = require('../models/User')
 
-exports.getAllUsers = async (req, res) => {
+exports.searchUserByUsername = async (req, res) => {
+  const searchname = req.params.name
   try {
-    const allUsers = await User.find({})
+    const allUsers = await User.find({
+      $or: [
+        {
+          name: {
+            $regex: searchname,
+            $options: 'i',
+          },
+        },
+        {
+          username: {
+            $regex: searchname,
+            $options: 'i',
+          },
+        },
+      ],
+    }).select('name')
     return res.status(200).json({ count: allUsers.length, data: allUsers })
   } catch (e) {
     console.log(e)
     return res.status(500).json({ error: 'something went wrong!' })
-  }
-}
-
-exports.createUser = async (req, res) => {
-  try {
-    const user = await User.create(req.body)
-    return res.status(201).json(user)
-  } catch (e) {
-    console.log(e)
-    if (e.code == 11000) {
-      return res.status(500).json({ error: 'Duplicate Email' })
-    }
-    return res.status(500).json({ error: e })
   }
 }
 

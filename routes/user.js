@@ -1,16 +1,15 @@
 const express = require('express')
 const {
-  getAllUsers,
-  createUser,
+  searchUserByUsername,
   updateUser,
   deleteUser,
 } = require('../controllers/user')
+const { authenticate } = require('../middlewares/auth')
 
 const userRouter = express.Router()
 
 userRouter
-  .get('/', getAllUsers)
-  .post('/', createUser)
+  .get('/:name', authenticate, searchUserByUsername)
   .patch('/:id', updateUser)
   .delete('/:id', deleteUser)
 

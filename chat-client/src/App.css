@@ -95,7 +95,51 @@ textarea {
 .header {
   display: flex;
   justify-content: space-between;
-  padding: 2rem;
+  align-items: center;
+  padding: 1.5rem;
+  color: var(--c1);
+  background-color: var(--c4);
+}
+
+.header-search input {
+  border: 1px solid var(--c1);
+  color: var(--c1);
+  font-size: 1.3rem;
+}
+
+.header-search input::placeholder {
+  color: rgba(var(--C1), 0.7);
+}
+
+.header-search-results {
+  background-color: rgba(var(--C2), 0.9);
+  color: var(--c4);
+  font-size: 1.2rem;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  position: absolute;
+  width: 70%;
+  word-wrap: break-word;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-top: 1rem;
+}
+
+.header-search-results div {
+  padding-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-userintiails {
+  border: 2px solid var(--c1);
+  padding: 0.5rem;
+  font-weight: bolder;
+  background-color: rgba(var(--C3), 0.5);
+  border-radius: 100%;
 }
 
 .single-chat {
@@ -105,6 +149,15 @@ textarea {
   background-color: rgba(var(--C4), 0.1);
   border: 1px solid var(--c4);
   border-radius: 0.5rem;
+}
+
+.allchat-username {
+  font-weight: 500;
+}
+
+.allchat span {
+  font-size: 1.1rem;
+  color: rgba(var(--C4), 0.9);
 }
 
 .chat {
