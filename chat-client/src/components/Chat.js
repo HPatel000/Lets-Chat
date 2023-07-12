@@ -4,6 +4,7 @@ import SendIcon from '@mui/icons-material/Send'
 import io from 'socket.io-client'
 import axios from 'axios'
 import { useLocation } from 'react-router-dom'
+import { DeleteOutlineRounded } from '@mui/icons-material'
 const socket = io.connect('http://localhost:5000')
 
 const Chat = () => {
@@ -84,6 +85,13 @@ const Chat = () => {
     }
   }
 
+  const onMsgDelete = async (id) => {
+    const res = await axios.delete(`/chat/msg/${id}`)
+    if (res.status == 204) {
+      await getAllMessages()
+    }
+  }
+
   const onKeyUpTextArea = async (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       onSendMsg()
@@ -105,6 +113,9 @@ const Chat = () => {
                   : 'chat-bubble-left'
               }`}
             >
+              <div className='chat-bubble-actions'>
+                <DeleteOutlineRounded onClick={() => onMsgDelete(msg._id)} />
+              </div>
               <div className='chat-bubble-header'>
                 {/* <small>{msg.sender.name} </small> */}
                 <small>

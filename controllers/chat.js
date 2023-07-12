@@ -131,6 +131,16 @@ exports.saveMessage = async (req, res) => {
   }
 }
 
+exports.deleteMessage = async (req, res) => {
+  const id = req.params.id
+  try {
+    await Message.findByIdAndDelete(id)
+    return res.status(204).json({ success: true, data: 'Message saved' })
+  } catch (e) {
+    return res.status(500).json({ error: 'something went wrong!' })
+  }
+}
+
 exports.reactToMsg = async (req, res, next) => {
   try {
     const { msgId, reaction } = req.body

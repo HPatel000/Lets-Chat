@@ -189,6 +189,7 @@ textarea {
   width: max-content;
   margin: 0.5rem 1rem;
   font-size: 1rem;
+  position: relative;
 }
 
 .chat-bubble-header {
@@ -221,6 +222,23 @@ textarea {
 .chat-bubble-right .chat-bubble-header {
   border-radius: var(--chat-Bubble-Radius) 0rem 0rem 0rem;
   background-color: rgba(var(--C1), 0.9);
+}
+
+.chat-bubble-actions {
+  position: absolute;
+  display: none;
+}
+
+.chat-bubble-right .chat-bubble-actions {
+  left: -1.5rem;
+}
+
+.chat-bubble-left .chat-bubble-actions {
+  right: -1.5rem;
+}
+
+.chat-bubble:hover .chat-bubble-actions {
+  display: block;
 }
 .msg-send {
   display: flex;
