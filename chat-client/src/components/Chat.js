@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import SendIcon from '@mui/icons-material/Send'
-import io from 'socket.io-client'
 import axios from 'axios'
 import { useLocation } from 'react-router-dom'
 import { DeleteOutlineRounded } from '@mui/icons-material'
-const socket = io.connect('http://localhost:5000')
+import io from 'socket.io-client'
 
 const Chat = () => {
   const state = useSelector((state) => state.authReducer)
@@ -20,7 +19,21 @@ const Chat = () => {
   }, [])
 
   useEffect(() => {
-    socketMsgs()
+    const socket = io.connect('http://localhost:5000')
+
+    socket.on(`${chat._id}`, (payload) => {
+      if (chat) {
+        setChat((prevChat) => {
+          return {
+            ...prevChat,
+            messages: [...prevChat.messages, payload],
+          }
+        })
+      }
+    })
+    return () => {
+      socket.disconnect()
+    }
   }, [chat])
 
   const getChatID = async () => {
@@ -56,18 +69,7 @@ const Chat = () => {
     }
   }
 
-  const socketMsgs = () => {
-    socket.on(`${chat._id}`, (payload) => {
-      if (chat) {
-        setChat((prevChat) => {
-          return {
-            ...prevChat,
-            messages: [...prevChat.messages, payload],
-          }
-        })
-      }
-    })
-  }
+  const socketMsgs = () => {}
 
   const onMsgChange = (e) => {
     setMsgText(e.target.value)

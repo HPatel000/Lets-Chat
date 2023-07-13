@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute'
 import ChatPage from './components/ChatPage'
 import Chat from './components/Chat'
+
 const router = createBrowserRouter([
   {
     path: '/',
