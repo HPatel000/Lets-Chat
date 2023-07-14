@@ -4,7 +4,7 @@ import Chat from './Chat'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { Link, useNavigate } from 'react-router-dom'
-import { ChatBubble, ChatRounded } from '@mui/icons-material'
+import { ChatBubble, ChatRounded, SearchRounded } from '@mui/icons-material'
 
 const ChatPage = () => {
   // header search
@@ -80,6 +80,8 @@ const ChatPage = () => {
             value={searchText}
             type='search'
           />
+
+          <SearchRounded className='header-search-icon' />
           {searchResults.length > 0 && (
             <div className='header-search-results'>
               {searchResults.map((res) => (
