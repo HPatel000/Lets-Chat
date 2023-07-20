@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import SendIcon from '@mui/icons-material/Send'
 import axios from 'axios'
@@ -13,6 +13,7 @@ const Chat = () => {
   const [chat, setChat] = useState({})
   const [Receiver, setReceiver] = useState('')
   const [msgText, setMsgText] = useState('')
+  const messagesEndRef = useRef(null)
 
   useEffect(() => {
     getAllMessages()
@@ -35,6 +36,15 @@ const Chat = () => {
       socket.disconnect()
     }
   }, [chat])
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [chat])
+
+  const scrollToBottom = () => {
+    console.log('SCROLLING', chat)
+    messagesEndRef.current.scrollIntoView({ behaviour: 'smooth' })
+  }
 
   const getChatID = async () => {
     try {
@@ -68,8 +78,6 @@ const Chat = () => {
       console.error(e)
     }
   }
-
-  const socketMsgs = () => {}
 
   const onMsgChange = (e) => {
     setMsgText(e.target.value)
@@ -133,6 +141,7 @@ const Chat = () => {
               </div>
             </div>
           ))}
+        <div ref={messagesEndRef}></div>
       </div>
       <div className='msg-send'>
         <textarea
