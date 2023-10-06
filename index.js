@@ -6,10 +6,11 @@ const cors = require('cors')
 const chatRouter = require('./routes/chat')
 const authRouter = require('./routes/auth')
 const groupChatRouter = require('./routes/groupchat')
+const msgRouter = require('./routes/message')
 
 const app = new express()
 const server = app.listen(5000, () => {
-  console.log('SERVER STARTED AT PORT 5000')
+  console.log('SERVER STARTED AT PORT 5000...')
 })
 const io = require('socket.io')(server, {
   cors: {
@@ -32,4 +33,5 @@ app.get('/', (req, res) => {
 app.use('/auth', authRouter)
 app.use('/user', userRouter)
 app.use('/chat', chatRouter)
+app.use('/msg', msgRouter)
 app.use('/group', groupChatRouter)

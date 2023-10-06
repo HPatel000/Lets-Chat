@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import Header from './Header'
-import Chat from './Chat'
 import { useSelector } from 'react-redux'
-import axios from 'axios'
-import { Link, useNavigate } from 'react-router-dom'
-import { ChatBubble, ChatRounded, SearchRounded } from '@mui/icons-material'
+import axios from '../HttpInterceptor'
+import { useNavigate } from 'react-router-dom'
+import { ChatRounded, SearchRounded } from '@mui/icons-material'
 
 const ChatPage = () => {
   // header search

@@ -3,6 +3,7 @@ import axios from 'axios'
 import { login } from '../GlobalState/authReducer'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
+import Alert from './Alert'
 
 const Login = () => {
   const dispatch = useDispatch()
@@ -12,6 +13,8 @@ const Login = () => {
     username: '',
     password: '',
   })
+
+  const [alertmsg, setAlertMsg] = useState(null)
 
   const onInputChange = (e) => {
     setloginForm({ ...loginForm, [e.target.name]: e.target.value })
@@ -23,10 +26,15 @@ const Login = () => {
       username: loginForm.username,
       password: loginForm.password,
     }
-    const res = await axios.post('/auth/login', logInJson)
-    if (res.status === 200) {
+    try {
+      const res = await axios.post('/auth/login', logInJson)
       dispatch(login(res.data.data))
       navigate('/')
+    } catch (e) {
+      setAlertMsg({ message: e.response.data.error, type: 'danger' })
+      setTimeout(() => {
+        setAlertMsg(null)
+      }, 10000)
     }
   }
   return (
@@ -53,6 +61,7 @@ const Login = () => {
           Don't have an account? Sign In
         </Link>
       </form>
+      {alertmsg && <Alert message={alertmsg.message} type={alertmsg.type} />}
     </div>
   )
 }

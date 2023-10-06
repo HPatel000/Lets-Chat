@@ -1,27 +1,63 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import SendIcon from '@mui/icons-material/Send'
 import axios from 'axios'
 import { useLocation } from 'react-router-dom'
-import { DeleteOutlineRounded } from '@mui/icons-material'
 import io from 'socket.io-client'
+import ChatBubble from './ChatBubble'
+import UseScroll from '../hooks/useScroll'
 
 const Chat = () => {
   const state = useSelector((state) => state.authReducer)
   const location = useLocation()
-
+  const [chatId, setChatId] = useState()
   const [chat, setChat] = useState({})
   const [Receiver, setReceiver] = useState('')
   const [msgText, setMsgText] = useState('')
+  const [pageNumber, setPageNumber] = useState(1)
+  const [api, setApi] = useState(null)
   const messagesEndRef = useRef(null)
+  const { data, hasMore, loading, error } = UseScroll(api, pageNumber, 10)
+  const observer = useRef()
+  const lastChatElementRef = useCallback((node) => {
+    if (loading) return
+    if (observer.current) observer.current.disconnect()
+    observer.current = new IntersectionObserver((entries) => {
+      console.log('USESCROLLLLLLL', entries[0])
+      if (entries[0].isIntersecting && hasMore) {
+        setPageNumber((prevPageNumber) => prevPageNumber + 1)
+        console.log('USESCROLLLLLLL')
+      }
+    })
+    if (node) observer.current.observe(node)
+  })
 
   useEffect(() => {
-    getAllMessages()
+    // getAllMessages()
+    getChatID()
   }, [])
 
   useEffect(() => {
-    const socket = io.connect('http://localhost:5000')
+    if (data.chat) {
+      console.log(data)
+      setChat((prevState) => {
+        if (prevState && prevState.messages) {
+          prevState.messages = [...data.chat.messages, ...prevState.messages]
+        }
+        return JSON.parse(JSON.stringify(data.chat))
+      })
+      if (data.chat.user1._id === state.user._id) {
+        setReceiver(data.chat.user2)
+      } else {
+        setReceiver(data.chat.user1)
+      }
+    } else {
+      setChat({})
+    }
+  }, [data])
 
+  useEffect(() => {
+    const socket = io.connect('http://localhost:5000')
     socket.on(`${chat._id}`, (payload) => {
       if (chat) {
         setChat((prevChat) => {
@@ -35,14 +71,19 @@ const Chat = () => {
     return () => {
       socket.disconnect()
     }
-  }, [chat])
+  }, [data])
 
   useEffect(() => {
     scrollToBottom()
   }, [chat])
 
+  useEffect(() => {
+    if (chatId) {
+      setApi(`/chat/msg/get/${chatId}`)
+    }
+  }, [chatId])
+
   const scrollToBottom = () => {
-    console.log('SCROLLING', chat)
     messagesEndRef.current.scrollIntoView({ behaviour: 'smooth' })
   }
 
@@ -50,6 +91,7 @@ const Chat = () => {
     try {
       const res = await axios.get(`/chat/${location.state.id}`)
       if (res.data) {
+        setChatId(res.data.chat[0]._id)
         return res.data.chat[0]._id
       }
       return null
@@ -102,6 +144,8 @@ const Chat = () => {
     }
   }
 
+  const onMsgReaction = async (id) => {}
+
   const onKeyUpTextArea = async (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       onSendMsg()
@@ -114,33 +158,30 @@ const Chat = () => {
       </div>
       <div className='chat-section'>
         {chat.messages &&
-          chat.messages.map((msg) => (
-            <div
-              key={msg._id}
-              className={`chat-bubble ${
-                msg.sender._id === state.user._id
-                  ? 'chat-bubble-right'
-                  : 'chat-bubble-left'
-              }`}
-            >
-              <div className='chat-bubble-actions'>
-                <DeleteOutlineRounded onClick={() => onMsgDelete(msg._id)} />
-              </div>
-              <div className='chat-bubble-header'>
-                {/* <small>{msg.sender.name} </small> */}
-                <small>
-                  {new Date(msg.date).toLocaleDateString()}{' '}
-                  {new Date(msg.date).toLocaleTimeString('en-us', {
-                    hour: 'numeric',
-                    minute: 'numeric',
-                  })}
-                </small>
-              </div>
-              <div className='chat-bubble-msg'>
-                <p>{msg.message}</p>
-              </div>
-            </div>
-          ))}
+          chat.messages.map((msg, index) => {
+            if (index === 0) {
+              return (
+                <div key={msg._id} ref={lastChatElementRef}>
+                  <ChatBubble
+                    currUserId={state.user._id}
+                    msg={msg}
+                    onMsgDelete={onMsgDelete}
+                    onMsgReaction={onMsgReaction}
+                  />
+                </div>
+              )
+            } else {
+              return (
+                <ChatBubble
+                  key={msg._id}
+                  currUserId={state.user._id}
+                  msg={msg}
+                  onMsgDelete={onMsgDelete}
+                  onMsgReaction={onMsgReaction}
+                />
+              )
+            }
+          })}
         <div ref={messagesEndRef}></div>
       </div>
       <div className='msg-send'>

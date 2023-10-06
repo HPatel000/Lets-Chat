@@ -3,37 +3,36 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const env = require('../env')
 
-const UserSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Name is required'],
+const UserSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Name is required'],
+    },
+    username: {
+      type: String,
+      required: [true, 'username is required'],
+      unique: true,
+    },
+    email: {
+      type: String,
+      required: [true, 'Email Id is required'],
+      unique: true,
+      match: [
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        'Please add a valid email',
+      ],
+    },
+    password: {
+      type: String,
+      required: [true, 'Password is required'],
+      minlength: [8, 'Min length requried for password is 8'],
+      maxlength: [20, 'Max length requried for password is 20'],
+      select: false,
+    },
   },
-  username: {
-    type: String,
-    required: [true, 'username is required'],
-    unique: true,
-  },
-  email: {
-    type: String,
-    required: [true, 'Email Id is required'],
-    unique: true,
-    match: [
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-      'Please add a valid email',
-    ],
-  },
-  password: {
-    type: String,
-    required: [true, 'Password is required'],
-    minlength: [8, 'Min length requried for password is 8'],
-    maxlength: [20, 'Max length requried for password is 20'],
-    select: false,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-})
+  { timestamps: true }
+)
 
 // Encrypt password using bcrypt
 UserSchema.pre('save', async function (next) {

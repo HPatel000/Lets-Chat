@@ -15,17 +15,13 @@ const Signin = () => {
     password: String,
   })
 
-  const onInputChange = (e) => {
-    setSigninForm({ ...signinForm, [e.target.name]: e.target.value })
-  }
-
   const onSignIn = async (e) => {
     e.preventDefault()
     const signinJson = {
-      name: signinForm.name,
-      username: signinForm.username,
-      email: signinForm.email,
-      password: signinForm.password,
+      name: e.target.name.value,
+      username: e.target.username.value,
+      email: e.target.email.value,
+      password: e.target.password.value,
     }
     const res = await axios.post('/auth/signin', signinJson)
     if (res.status === 200) {

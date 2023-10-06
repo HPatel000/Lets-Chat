@@ -74,6 +74,7 @@ body {
   background-color: var(--c1);
   font-size: 1.5rem;
   color: var(--c4);
+  overflow: hidden;
 }
 
 input,
@@ -224,6 +225,7 @@ input[type='search']:focus::-webkit-search-cancel-button {
 .header-userintiails {
   border: 2px solid var(--c1);
   padding: 0.5rem;
+  aspect-ratio: 1;
   font-weight: bolder;
   background-color: rgba(var(--C3), 0.5);
   border-radius: 100%;
@@ -320,12 +322,28 @@ input[type='search']:focus::-webkit-search-cancel-button {
   left: -1.5rem;
 }
 
+.chat-bubble-actions-reaction {
+  position: absolute;
+  left: -0.5rem;
+  bottom: -1rem;
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(10px);
+  background-color: transparent;
+  display: none !important;
+}
+
 .chat-bubble-left .chat-bubble-actions {
   right: -1.5rem;
 }
 
-.chat-bubble:hover .chat-bubble-actions {
-  display: block;
+.chat-bubble-right .chat-bubble-actions-reaction {
+  left: unset;
+  right: -0.5rem;
+}
+
+.chat-bubble:hover .chat-bubble-actions,
+.chat-bubble:hover .chat-bubble-actions-reaction {
+  display: block !important;
 }
 .msg-send {
   display: flex;
@@ -346,4 +364,39 @@ input[type='search']:focus::-webkit-search-cancel-button {
   background: none;
   border: none;
   color: var(--c4);
+}
+
+.alertPopup {
+  position: absolute;
+  top: 1rem;
+  right: -20rem;
+  padding: 1rem 2rem;
+
+  border-radius: 0.5rem;
+  animation: alertAnimation 10s cubic-bezier(0.73, -0.52, 0, 1.49);
+}
+
+.alertdanger {
+  background-color: red;
+}
+.alertwarning {
+  background-color: yellow;
+}
+.alertsuccess {
+  background-color: green;
+}
+
+@keyframes alertAnimation {
+  0% {
+    right: -20rem;
+  }
+  5% {
+    right: 1rem;
+  }
+  95% {
+    right: 1rem;
+  }
+  100% {
+    right: -20rem;
+  }
 }
