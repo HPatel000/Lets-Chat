@@ -5,33 +5,25 @@ import axios from 'axios'
 import { useLocation } from 'react-router-dom'
 import io from 'socket.io-client'
 import ChatBubble from '../components/ChatBubble'
-import UseScroll from '../hooks/useScroll'
 
 const Chat = () => {
   const state = useSelector((state) => state.authReducer)
   const chat = useLocation().state.chat
   const Receiver = chat.user1._id === state.user._id ? chat.user2 : chat.user1
   const messagesEndRef = useRef(null)
-  const observer = useRef()
 
   const [messages, setMessages] = useState([])
   const [msgText, setMsgText] = useState('')
 
   const [pageNumber, setPageNumber] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
   const [api, setApi] = useState(null)
 
-  const lastChatElementRef = useCallback((node) => {
-    // if (loading) return
-    // if (observer.current) observer.current.disconnect()
-    // observer.current = new IntersectionObserver((entries) => {
-    //   console.log('USESCROLLLLLLL', entries[0])
-    //   if (entries[0].isIntersecting && hasMore) {
-    //     setPageNumber((prevPageNumber) => prevPageNumber + 1)
-    //     console.log('USESCROLLLLLLL')
-    //   }
-    // })
-    // if (node) observer.current.observe(node)
-  })
+  const handleScroll = (e) => {
+    if (e.target.scrollTop === 0 && hasMore) {
+      setPageNumber((prev) => prev + 1)
+    }
+  }
 
   useEffect(() => {
     const socket = io.connect('http://localhost:5000')
@@ -61,23 +53,26 @@ const Chat = () => {
     if (api) {
       getAllMessages()
     }
-  }, [api])
+  }, [api, pageNumber])
 
   useEffect(() => {
     scrollToBottom()
   }, [messages])
 
   const scrollToBottom = () => {
-    console.log(messagesEndRef)
     messagesEndRef.current.scrollIntoView({ behaviour: 'smooth' })
   }
 
   const getAllMessages = async () => {
     if (!chat) return
     try {
-      const res = await axios.get(`${api}`)
+      const res = await axios.get(`${api}/${pageNumber}/13`)
+      if (res.data.length === 0) {
+        setHasMore(false)
+        return
+      }
       if (res.data) {
-        setMessages(res.data)
+        setMessages((prev) => [...prev, ...res.data])
       } else {
         setMessages([])
       }
@@ -121,46 +116,27 @@ const Chat = () => {
       <div className='chat-header'>
         <h2>{Receiver && Receiver.name}</h2>
       </div>
-      <div className='chat-section'>
+      <div className='chat-section' onScroll={handleScroll}>
         {messages &&
-          messages.map((msg, index) => {
-            if (index === 0) {
-              return (
-                <div
-                  key={msg._id}
-                  ref={lastChatElementRef}
-                  className={`chat-bubble ${
-                    msg.sender._id === state.user._id
-                      ? 'chat-bubble-right'
-                      : 'chat-bubble-left'
-                  }`}
-                >
-                  <ChatBubble
-                    msg={msg}
-                    onMsgDelete={onMsgDelete}
-                    onMsgReaction={onMsgReaction}
-                  />
-                </div>
-              )
-            } else {
-              return (
-                <div
-                  key={msg._id}
-                  className={`chat-bubble ${
-                    msg.sender._id === state.user._id
-                      ? 'chat-bubble-right'
-                      : 'chat-bubble-left'
-                  }`}
-                >
-                  <ChatBubble
-                    msg={msg}
-                    onMsgDelete={onMsgDelete}
-                    onMsgReaction={onMsgReaction}
-                  />
-                </div>
-              )
-            }
-          })}
+          messages
+            .slice()
+            .reverse()
+            .map((msg, index) => (
+              <div
+                key={msg._id}
+                className={`chat-bubble ${
+                  msg.sender._id === state.user._id
+                    ? 'chat-bubble-right'
+                    : 'chat-bubble-left'
+                }`}
+              >
+                <ChatBubble
+                  msg={msg}
+                  onMsgDelete={onMsgDelete}
+                  onMsgReaction={onMsgReaction}
+                />
+              </div>
+            ))}
         <div ref={messagesEndRef}></div>
       </div>
       <div className='msg-send'>

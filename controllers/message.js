@@ -5,7 +5,7 @@ const { createChatService } = require('./chat')
 exports.getMessages = async (req, res) => {
   try {
     const { chatId } = req.params
-    const page = req.params.page || 0
+    const page = req.params.page || 1
     const limit = req.params.limit || 0
 
     if (!mongoose.isValidObjectId(chatId)) {
@@ -14,14 +14,14 @@ exports.getMessages = async (req, res) => {
 
     const messages = await Message.find({})
       .where({ chatId: chatId })
-      .sort({ createdAt: 1 })
+      .sort({ createdAt: -1 })
       .populate([
         {
           path: 'sender',
           select: 'name',
         },
       ])
-      .skip(page * limit)
+      .skip((page - 1) * limit)
       .limit(limit)
 
     return res.status(200).json(messages)
