@@ -4,7 +4,9 @@ const { createChatService } = require('./chat')
 
 exports.getMessages = async (req, res) => {
   try {
-    const { chatId, page, limit } = req.params
+    const { chatId } = req.params
+    const page = req.params.page || 0
+    const limit = req.params.limit || 0
 
     if (!mongoose.isValidObjectId(chatId)) {
       return res.status(400).json([])
@@ -81,6 +83,9 @@ exports.deleteMessage = async (req, res) => {
   const msgId = req.params.id
   try {
     const msg = await Message.findByIdAndDelete(msgId)
+    if (!msg) {
+      return res.status(204).json({})
+    }
     req.app.get('socketio').emit(`${msg.chatId}`, {
       event: 'deleted',
       msgId: msgId,

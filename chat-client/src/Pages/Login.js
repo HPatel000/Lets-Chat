@@ -3,7 +3,7 @@ import axios from 'axios'
 import { login } from '../GlobalState/authReducer'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import Alert from './Alert'
+import Alert from '../components/Alert'
 
 const Login = () => {
   const dispatch = useDispatch()

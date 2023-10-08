@@ -281,6 +281,10 @@ input[type='search']:focus::-webkit-search-cancel-button {
   position: relative;
 }
 
+.chat-bubble:nth-last-child(2) {
+  margin-bottom: 1rem;
+}
+
 .chat-bubble-header {
   background-color: rgba(var(--C2), 0.5);
   display: flex;

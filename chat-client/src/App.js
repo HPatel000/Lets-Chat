@@ -1,18 +1,18 @@
 import React from 'react'
 import './App.css'
-import Login from './components/Login'
-import Signin from './components/Signin'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute'
-import ChatPage from './components/ChatPage'
-import Chat from './components/Chat'
+import Chat from './Pages/Chat'
+import Login from './Pages/Login'
+import Signin from './Pages/Signin'
+import Home from './Pages/Home'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
       <ProtectedRoute>
-        <ChatPage />
+        <Home />
       </ProtectedRoute>
     ),
   },

@@ -19,7 +19,8 @@ exports.createChatService = async (user1, user2) => {
 exports.getUserChats = async (req, res, next) => {
   try {
     const user = req.user._id
-    const { page, limit } = req.params
+    const page = req.params.page || 0
+    const limit = req.params.limit || 0
     const chat = await Chat.find({})
       .or([{ user1: user }, { user2: user }])
       .slice('messages', -1)
