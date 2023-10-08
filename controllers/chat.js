@@ -19,19 +19,14 @@ exports.createChatService = async (user1, user2) => {
 exports.getUserChats = async (req, res, next) => {
   try {
     const user = req.user._id
+    const { page, limit } = req.params
     const chat = await Chat.find({})
       .or([{ user1: user }, { user2: user }])
       .slice('messages', -1)
       .populate('user1', 'name')
       .populate('user2', 'name')
-      .populate({
-        path: 'messages',
-        select: 'message sender',
-        populate: {
-          path: 'sender',
-          select: 'name',
-        },
-      })
+      .skip(page * limit)
+      .limit(limit)
 
     return res.status(200).json(chat)
   } catch (e) {
@@ -42,30 +37,8 @@ exports.getUserChats = async (req, res, next) => {
 exports.deleteChat = async (req, res) => {
   try {
     const id = req.params.id
-    const chat = Chat.findByIdAndDelete(id)
-    return res.status(204).json({ success: true, data: 'Chat deleted' })
-  } catch (e) {
-    return res.status(500).json({ error: 'something went wrong!' })
-  }
-}
-
-exports.getChatIDFromIds = async (req, res) => {
-  const sender = req.params.id
-  const receiver = req.user._id
-  try {
-    let chat = await Chat.find({})
-      .or([
-        { $and: [{ user1: receiver, user2: sender }] },
-        { $and: [{ user1: sender, user2: receiver }] },
-      ])
-      .select('-messages')
-    if (chat.length == 0) {
-      chat = await Chat.create({
-        user1: sender,
-        user2: receiver,
-      })
-    }
-    return res.status(200).json({ chat })
+    await Chat.findByIdAndDelete(id)
+    return res.status(204).json({})
   } catch (e) {
     return res.status(500).json({ error: 'something went wrong!' })
   }

@@ -29,22 +29,22 @@ const MessageSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-MessageSchema.pre('deleteOne', { document: true }, async function (next) {
-  const messageId = this._id
+// MessageSchema.pre('deleteOne', { document: true }, async function (next) {
+//   const messageId = this._id
 
-  // Delete chat messages that reference this message
-  await Chat.updateMany(
-    { messages: messageId },
-    { $pull: { messages: messageId } }
-  )
+//   // Delete chat messages that reference this message
+//   await Chat.updateMany(
+//     { messages: messageId },
+//     { $pull: { messages: messageId } }
+//   )
 
-  // Delete group chat messages that reference this message
-  await GroupChat.updateMany(
-    { messages: messageId },
-    { $pull: { messages: messageId } }
-  )
+//   // Delete group chat messages that reference this message
+//   await GroupChat.updateMany(
+//     { messages: messageId },
+//     { $pull: { messages: messageId } }
+//   )
 
-  next()
-})
+//   next()
+// })
 
 module.exports = mongoose.model('Message', MessageSchema)

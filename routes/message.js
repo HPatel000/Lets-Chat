@@ -5,14 +5,14 @@ const {
   deleteMessage,
   saveMessage,
   reactToMsg,
-} = require('../controllers/messages')
+} = require('../controllers/message')
 
 const msgRouter = express.Router()
 
 // get('/msg/*', authenticate, getMessages)
 msgRouter
-  .get('/:id', authenticate, getMessages)
-  .post('/:id', authenticate, saveMessage)
+  .get('/:chatId/:page?/:limit?', authenticate, getMessages)
+  .post('/:id?', authenticate, saveMessage)
   .put('/:id', authenticate, reactToMsg)
   .delete('/:id', authenticate, deleteMessage)
 
