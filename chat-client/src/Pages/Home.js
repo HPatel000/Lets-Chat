@@ -36,11 +36,11 @@ const Home = () => {
   }
 
   const getLastMessageSenderName = (msg) => {
-    if (msg.length == 0) return ''
-    if (msg[0].sender._id === state.user._id) {
+    if (!msg) return ''
+    if (msg.sender._id === state.user._id) {
       return 'You'
     }
-    return msg[0].sender.name
+    return msg.sender.name.split(' ')[0] || 'UU'
   }
 
   const onNavigation = (chat) => {
@@ -59,13 +59,13 @@ const Home = () => {
             onClick={() => onNavigation(chat)}
           >
             <p className='allchat-username'>{getReceiver(chat).name}</p>
-            {/* {chat.messages.length > 0 && (
+            {chat.messages && (
               <>
                 <span>{getLastMessageSenderName(chat.messages)}</span>
                 <span>{`: `}</span>
-                <span>{chat.messages[0].message}</span>
+                <span>{chat.messages.message}</span>
               </>
-            )} */}
+            )}
           </div>
         ))}
       </div>
