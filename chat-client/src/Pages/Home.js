@@ -54,16 +54,16 @@ const Home = () => {
         {/* <h1>Chat</h1> */}
         {allchat.map((chat) => (
           <div
-            key={chat._id}
+            key={chat.chat._id}
             className='single-chat'
-            onClick={() => onNavigation(chat)}
+            onClick={() => onNavigation(chat.chat)}
           >
-            <p className='allchat-username'>{getReceiver(chat).name}</p>
-            {chat.messages && (
+            <p className='allchat-username'>{getReceiver(chat.chat).name}</p>
+            {chat.chat.lastMessage && (
               <>
-                <span>{getLastMessageSenderName(chat.messages)}</span>
+                <span>{getLastMessageSenderName(chat.chat.lastMessage)}</span>
                 <span>{`: `}</span>
-                <span>{chat.messages.message}</span>
+                <span>{chat.chat.lastMessage.message}</span>
               </>
             )}
           </div>
