@@ -39,57 +39,94 @@ exports.getUserChats = async (req, res, next) => {
           chat: { $first: '$$ROOT' },
         },
       },
+      {
+        $unwind: '$chat',
+      },
+      {
+        $replaceRoot: {
+          newRoot: '$chat',
+        },
+      },
       { $skip: (page - 1) * limit },
       { $limit: limit },
       {
         $lookup: {
           from: 'users',
-          localField: 'chat.user1',
+          localField: 'user1',
           foreignField: '_id',
-          as: 'chat.user1',
+          as: 'user1',
         },
       },
       {
         $lookup: {
           from: 'users',
-          localField: 'chat.user2',
+          localField: 'user2',
           foreignField: '_id',
-          as: 'chat.user2',
+          as: 'user2',
         },
       },
       {
         $addFields: {
-          'chat.user1': { $arrayElemAt: ['$chat.user1', 0] },
-          'chat.user2': { $arrayElemAt: ['$chat.user2', 0] },
+          user1_0: { $arrayElemAt: ['$user1', 0] },
+        },
+      },
+      {
+        $addFields: {
+          sender: {
+            $cond: {
+              if: {
+                $eq: ['$user1_0._id', req.user._id],
+              },
+              then: { $arrayElemAt: ['$user2', 0] },
+              else: { $arrayElemAt: ['$user1', 0] },
+            },
+          },
+          receiver: { $literal: req.user },
         },
       },
       {
         $lookup: {
           from: 'users',
-          localField: 'chat.lastMessage.sender',
+          localField: 'lastMessage.sender',
           foreignField: '_id',
-          as: 'chat.lastMessage.sender',
+          as: 'lastMessage.sender',
         },
       },
       {
         $addFields: {
-          'chat.lastMessage.sender': {
-            $arrayElemAt: ['$chat.lastMessage.sender', 0],
+          'lastMessage.sender': { $arrayElemAt: ['$lastMessage.sender', 0] },
+        },
+      },
+      {
+        $addFields: {
+          'lastMessage.sender.name': {
+            $cond: {
+              if: {
+                $eq: ['$lastMessage.sender._id', req.user._id],
+              },
+              then: 'You',
+              else: {
+                $arrayElemAt: [
+                  {
+                    $split: ['$lastMessage.sender.name', ' '],
+                  },
+                  0,
+                ],
+              },
+            },
           },
         },
       },
       {
         $project: {
-          'chat.user1.name': 1,
-          'chat.user1._id': 1,
-          'chat.user1.name': 1,
-          'chat.user2._id': 1,
-          'chat.lastMessage.sender.name': 1,
-          'chat.lastMessage.sender._id': 1,
-          'chat.lastMessage.message': 1,
-          'chat.lastMessage._id': 1,
-          'chat.lastMessage.chatId': 1,
-          'chat.lastMessage.createdAt': 1,
+          'sender._id': 1,
+          'sender.name': 1,
+          'receiver._id': 1,
+          'receiver.name': 1,
+          'lastMessage.sender._id': 1,
+          'lastMessage.sender.name': 1,
+          'lastMessage._id': 1,
+          'lastMessage.message': 1,
         },
       },
     ])
@@ -109,73 +146,3 @@ exports.deleteChat = async (req, res) => {
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
-
-// [
-//   { $match: { $or: [{ user1: user }, { user2: user }] } },
-//   {
-//     $lookup: {
-//       from: 'messages',
-//       localField: '_id',
-//       foreignField: 'chatId',
-//       as: 'lastMessage',
-//     },
-//   },
-//   { $unwind: '$lastMessage' },
-//   { $sort: { 'lastMessage.createdAt': -1 } },
-//   {
-//     $group: {
-//       _id: '$_id',
-//       chat: { $first: '$$ROOT' },
-//     },
-//   },
-//   { $skip: (page - 1) * limit },
-//   { $limit: limit },
-//   {
-//     $lookup: {
-//       from: 'users',
-//       localField: 'chat.user1',
-//       foreignField: '_id',
-//       as: 'chat.user1',
-//     },
-//   },
-//   {
-//     $lookup: {
-//       from: 'users',
-//       localField: 'chat.user2',
-//       foreignField: '_id',
-//       as: 'chat.user2',
-//     },
-//   },
-//   {
-//     $addFields: {
-//       'chat.user1': { $arrayElemAt: ['$chat.user1', 0] },
-//       'chat.user2': { $arrayElemAt: ['$chat.user2', 0] },
-//     },
-//   },
-//   {
-//     $lookup: {
-//       from: 'users',
-//       localField: 'chat.lastMessage.sender',
-//       foreignField: '_id',
-//       as: 'chat.lastMessage.sender',
-//     },
-//   },
-//   {
-//     $addFields: {
-//       'chat.lastMessage.sender': {
-//         $arrayElemAt: ['$chat.lastMessage.sender', 0],
-//       },
-//     },
-//   },
-//   {
-//     $project: {
-//       'chat.user1.name': 1,
-//       'chat.user2.name': 1,
-//       'chat.lastMessage.sender.name': 1,
-//       'chat.lastMessage.message': 1,
-//       'chat.lastMessage._id': 1,
-//       'chat.lastMessage.chatId': 1,
-//       'chat.lastMessage.createdAt': 1,
-//     },
-//   },
-// ]

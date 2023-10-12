@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import SendIcon from '@mui/icons-material/Send'
 import axios from 'axios'
@@ -9,7 +9,6 @@ import ChatBubble from '../components/ChatBubble'
 const Chat = () => {
   const state = useSelector((state) => state.authReducer)
   const chat = useLocation().state.chat
-  const Receiver = chat.user1._id === state.user._id ? chat.user2 : chat.user1
   const messagesEndRef = useRef(null)
 
   const [messages, setMessages] = useState([])
@@ -32,7 +31,7 @@ const Chat = () => {
         if (payload.event === 'added') {
           setMessages((prev) => [...prev, payload.msg])
         } else if (payload.event === 'deleted') {
-          setMessages((prev) => prev.filter((msg) => msg._id != payload.msgId))
+          setMessages((prev) => prev.filter((msg) => msg._id !== payload.msgId))
         } else if (payload.event === 'reacted') {
           // TODO
         }
@@ -99,7 +98,7 @@ const Chat = () => {
 
   const onMsgDelete = async (id) => {
     const res = await axios.delete(`/msg/${id}`)
-    if (res.status == 204) {
+    if (res.status === 204) {
       // await getAllMessages()
     }
   }
@@ -114,7 +113,7 @@ const Chat = () => {
   return (
     <div className='chat'>
       <div className='chat-header'>
-        <h2>{Receiver && Receiver.name}</h2>
+        <h2>{chat.receiver && chat.receiver.name}</h2>
       </div>
       <div className='chat-section' onScroll={handleScroll}>
         {messages &&
