@@ -1,16 +1,19 @@
 const Chat = require('../models/Chat')
 
 exports.createChatService = async (user1, user2) => {
-  const chat = await Chat.findOne({}).or([
-    { $and: [{ user1: user1, user2: user2 }] },
-    { $and: [{ user1: user2, user2: user1 }] },
-  ])
-  if (chat) {
-    return chat._id
+  const members = [user1, user2]
+
+  let chat = await Chat.find({
+    members: {
+      $all: members,
+      $size: members.length,
+    },
+  })
+  if (chat?.length) {
+    return chat[0]._id
   } else {
     chat = await Chat.create({
-      user1: user1,
-      user2: user2,
+      members: members,
     })
     return chat._id
   }
@@ -22,7 +25,7 @@ exports.getUserChats = async (req, res, next) => {
     const page = req.params.page || 1
     const limit = req.params.limit || 10
     const chat = await Chat.aggregate([
-      { $match: { $or: [{ user1: user }, { user2: user }] } },
+      { $match: { members: { $in: [user] } } },
       {
         $lookup: {
           from: 'messages',
@@ -52,22 +55,15 @@ exports.getUserChats = async (req, res, next) => {
       {
         $lookup: {
           from: 'users',
-          localField: 'user1',
+          localField: 'members',
           foreignField: '_id',
-          as: 'user1',
-        },
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'user2',
-          foreignField: '_id',
-          as: 'user2',
+          as: 'members',
         },
       },
       {
         $addFields: {
-          user1_0: { $arrayElemAt: ['$user1', 0] },
+          user1_0: { $arrayElemAt: ['$members', 0] },
+          memlength: { $size: '$members' },
         },
       },
       {
@@ -75,10 +71,17 @@ exports.getUserChats = async (req, res, next) => {
           sender: {
             $cond: {
               if: {
-                $eq: ['$user1_0._id', req.user._id],
+                $and: [
+                  { $eq: ['$user1_0._id', req.user._id] },
+                  { $eq: ['$memlength', 2] },
+                ],
               },
-              then: { $arrayElemAt: ['$user2', 0] },
-              else: { $arrayElemAt: ['$user1', 0] },
+              then: { $arrayElemAt: ['$members', 1] },
+              else: { $arrayElemAt: ['$members', 0] },
+              if: {
+                $gt: ['$memlength', 2],
+              },
+              then: null,
             },
           },
           receiver: { $literal: req.user },
@@ -119,6 +122,17 @@ exports.getUserChats = async (req, res, next) => {
       },
       {
         $project: {
+          members: {
+            $map: {
+              input: '$members',
+              as: 'member',
+              in: {
+                name: '$$member.name',
+                _id: '$$member._id',
+              },
+            },
+          },
+          isGroup: 1,
           'sender._id': 1,
           'sender.name': 1,
           'receiver._id': 1,

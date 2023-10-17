@@ -1,3 +1,4 @@
+const Chat = require('../models/Chat')
 const GroupChat = require('../models/GroupChat')
 
 exports.getAllGroupsForUser = async (req, res) => {
@@ -6,18 +7,9 @@ exports.getAllGroupsForUser = async (req, res) => {
     const grps = await GroupChat.find({})
       .where('members')
       .all([user])
-      .slice('messages', -1)
       .populate({
         path: 'members admin owner',
         select: 'name',
-      })
-      .populate({
-        path: 'messages',
-        select: 'message sender',
-        populate: {
-          path: 'sender',
-          select: 'name',
-        },
       })
     return res.status(200).json(grps)
   } catch (e) {
@@ -84,7 +76,8 @@ exports.createGroup = async (req, res) => {
     const user = req.user._id
     let { name, profile, members } = req.body
     if (!members) members = []
-    const grp = await GroupChat.create({
+    const grp = await Chat.create({
+      isGroup: true,
       name: name,
       grpImg: profile,
       members: [user, ...members],
@@ -118,7 +111,7 @@ exports.addMemberToGroup = async (req, res) => {
 }
 
 // only admin
-// multiple members can be removed at once (members is array if ids)
+// multiple members can be removed at once (members is array of ids)
 exports.removeMemberFromGroup = async (req, res) => {
   try {
     const { id } = req.params
@@ -154,12 +147,10 @@ exports.leaveGroup = async (req, res) => {
 
     if (group.owner.equals(user)) {
       await GroupChat.findByIdAndDelete(id)
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: `you left ${group.name} group and Group deleted`,
-        })
+      return res.status(200).json({
+        success: true,
+        message: `you left ${group.name} group and Group deleted`,
+      })
     }
     const userIndex = group.members.indexOf(user)
     if (userIndex != -1) {

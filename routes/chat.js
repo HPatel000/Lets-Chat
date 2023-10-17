@@ -4,7 +4,8 @@ const { authenticate } = require('../middlewares/auth')
 
 const chatRouter = express.Router()
 
-chatRouter.get('/:page?/:limit?', authenticate, getUserChats)
-chatRouter.delete('/:id', authenticate, deleteChat)
+chatRouter
+  .get('/:page?/:limit?', authenticate, getUserChats)
+  .delete('/:id', authenticate, deleteChat)
 
 module.exports = chatRouter

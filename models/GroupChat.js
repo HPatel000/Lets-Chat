@@ -6,6 +6,10 @@ const groupChatSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    isGroup: {
+      type: Boolean,
+      default: false,
+    },
     grpImg: String,
     members: [
       {

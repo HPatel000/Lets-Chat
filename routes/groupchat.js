@@ -24,7 +24,6 @@ const {
 const groupChatRouter = express.Router()
 
 groupChatRouter
-  .get('', authenticate, getAllGroupsForUser)
   .get('/messages/:id', authenticate, getAllMessagesForGroup)
   .get('/members/:id', authenticate, getAllMembersOfGroup)
   .get('/owner/:id', authenticate, getOwnerOfGroup)
@@ -47,6 +46,5 @@ groupChatRouter
   )
   .put('/updatename/:id', authenticate, isAdminofGroup, updateGroupName)
   .put('/updateprofile/:id', authenticate, isAdminofGroup, updateGroupImage)
-  .delete('/:id', authenticate, isOwnerofGroup, deleteGroup)
 
 module.exports = groupChatRouter
