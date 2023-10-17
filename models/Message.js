@@ -1,6 +1,4 @@
 const mongoose = require('mongoose')
-const Chat = require('./Chat')
-const GroupChat = require('./GroupChat')
 
 const MessageSchema = new mongoose.Schema(
   {

@@ -1,16 +1,12 @@
 const Chat = require('../models/Chat')
-const GroupChat = require('../models/GroupChat')
 
 exports.getAllGroupsForUser = async (req, res) => {
   try {
     const user = req.user._id
-    const grps = await GroupChat.find({})
-      .where('members')
-      .all([user])
-      .populate({
-        path: 'members admin owner',
-        select: 'name',
-      })
+    const grps = await Chat.find({}).where('members').all([user]).populate({
+      path: 'members admin owner',
+      select: 'name',
+    })
     return res.status(200).json(grps)
   } catch (e) {
     return res.status(500).json({ error: 'something went wrong!' })
@@ -20,7 +16,7 @@ exports.getAllGroupsForUser = async (req, res) => {
 exports.getAllMessagesForGroup = async (req, res) => {
   try {
     const { id } = req.params
-    const allMessages = await GroupChat.findById(id)
+    const allMessages = await Chat.findById(id)
       .select('messages')
       .populate({
         path: 'messages',
@@ -39,7 +35,7 @@ exports.getAllMessagesForGroup = async (req, res) => {
 exports.getAllMembersOfGroup = async (req, res) => {
   try {
     const { id } = req.params
-    const allMembers = await GroupChat.findById(id)
+    const allMembers = await Chat.findById(id)
       .select('members')
       .populate('members')
     return res.status(200).json(allMembers)
@@ -51,7 +47,7 @@ exports.getAllMembersOfGroup = async (req, res) => {
 exports.getOwnerOfGroup = async (req, res) => {
   try {
     const { id } = req.params
-    const owner = await GroupChat.findById(id).select('owner').populate('owner')
+    const owner = await Chat.findById(id).select('owner').populate('owner')
     return res.status(200).json(owner)
   } catch (e) {
     return res.status(500).json({ error: 'something went wrong!' })
@@ -61,9 +57,7 @@ exports.getOwnerOfGroup = async (req, res) => {
 exports.getAdminOfGroup = async (req, res) => {
   try {
     const { id } = req.params
-    const allAdmin = await GroupChat.findById(id)
-      .select('admin')
-      .populate('admin')
+    const allAdmin = await Chat.findById(id).select('admin').populate('admin')
     return res.status(200).json(allAdmin)
   } catch (e) {
     return res.status(500).json({ error: 'something went wrong!' })
@@ -96,7 +90,7 @@ exports.addMemberToGroup = async (req, res) => {
   try {
     const { members } = req.body
     const { id } = req.params
-    const group = await GroupChat.findById(id)
+    const group = await Chat.findById(id)
     for (let i = 0; i < members.length; i++) {
       const memberIndex = group.members.indexOf(members[i])
       if (memberIndex == -1) {
@@ -116,7 +110,7 @@ exports.removeMemberFromGroup = async (req, res) => {
   try {
     const { id } = req.params
     const { members } = req.body
-    const group = await GroupChat.findById(id)
+    const group = await Chat.findById(id)
 
     for (let i = 0; i < members.length; i++) {
       const removeId = group.members.indexOf(members[i])
@@ -140,13 +134,13 @@ exports.leaveGroup = async (req, res) => {
   try {
     const user = req.user._id
     const { id } = req.params
-    const group = await GroupChat.findById(id)
+    const group = await Chat.findById(id)
     if (!group) {
       return res.status(404).json({ error: 'No group found' })
     }
 
     if (group.owner.equals(user)) {
-      await GroupChat.findByIdAndDelete(id)
+      await Chat.findByIdAndDelete(id)
       return res.status(200).json({
         success: true,
         message: `you left ${group.name} group and Group deleted`,
@@ -175,7 +169,7 @@ exports.makeMemberAdminOfGroup = async (req, res) => {
   try {
     const { id } = req.params
     const { makeAdmin } = req.body
-    const group = await GroupChat.findById(id)
+    const group = await Chat.findById(id)
     const memberIndex = group.members.indexOf(makeAdmin)
     if (memberIndex == -1) {
       return res
@@ -201,7 +195,7 @@ exports.removeMemberAsAdminOfGroup = async (req, res) => {
     const { removeAdmin } = req.body
     const user = req.user._id
 
-    const group = await GroupChat.findById(id)
+    const group = await Chat.findById(id)
     const adminIndex = group.admin.indexOf(user)
     if (adminIndex == -1) {
       return res
@@ -229,7 +223,7 @@ exports.updateGroupName = async (req, res) => {
     const { name } = req.body
     const user = req.user._id
 
-    const group = await GroupChat.findByIdAndUpdate(
+    const group = await Chat.findByIdAndUpdate(
       id,
       { name: name },
       { new: true, runValidators: true }
@@ -255,7 +249,7 @@ exports.updateGroupImage = async (req, res) => {
     const { profile } = req.body
     const user = req.user._id
 
-    const group = await GroupChat.findByIdAndUpdate(
+    const group = await Chat.findByIdAndUpdate(
       id,
       { grpImg: profile },
       { new: true, runValidators: true }
@@ -280,11 +274,11 @@ exports.deleteGroup = async (req, res) => {
   try {
     const user = req.user._id
     const { id } = req.params
-    const group = await GroupChat.findById(id)
+    const group = await Chat.findById(id)
     if (!group.owner.equals(user)) {
       return res.status(400).json({ error: 'only owner can delete a group' })
     }
-    await GroupChat.findByIdAndDelete(id)
+    await Chat.findByIdAndDelete(id)
     return res
       .status(200)
       .json({ success: true, message: `${group.name} deleted` })
