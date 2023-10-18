@@ -90,7 +90,6 @@ exports.getUserChats = async (req, res, next) => {
       {
         $addFields: {
           user1_0: { $arrayElemAt: ['$members', 0] },
-          memlength: { $size: '$members' },
         },
       },
       {
@@ -100,15 +99,11 @@ exports.getUserChats = async (req, res, next) => {
               if: {
                 $and: [
                   { $eq: ['$user1_0._id', req.user._id] },
-                  { $eq: ['$memlength', 2] },
+                  { $eq: ['$isGroup', false] },
                 ],
               },
               then: { $arrayElemAt: ['$members', 1] },
               else: { $arrayElemAt: ['$members', 0] },
-              if: {
-                $gt: ['$memlength', 2],
-              },
-              then: null,
             },
           },
           receiver: { $literal: req.user },
@@ -150,13 +145,19 @@ exports.getUserChats = async (req, res, next) => {
       {
         $project: {
           members: {
-            $map: {
-              input: '$members',
-              as: 'member',
-              in: {
-                name: '$$member.name',
-                _id: '$$member._id',
+            $cond: {
+              if: { $eq: ['$isGroup', true] },
+              then: {
+                $map: {
+                  input: '$members',
+                  as: 'member',
+                  in: {
+                    name: '$$member.name',
+                    _id: '$$member._id',
+                  },
+                },
               },
+              else: '$$REMOVE',
             },
           },
           isGroup: 1,
@@ -200,8 +201,16 @@ exports.getUserChats = async (req, res, next) => {
               else: '$$REMOVE',
             },
           },
-          'sender._id': 1,
-          'sender.name': 1,
+          sender: {
+            $cond: {
+              if: { $eq: ['$isGroup', false] },
+              then: {
+                name: '$sender.name',
+                _id: '$sender._id',
+              },
+              else: '$$REMOVE',
+            },
+          },
           'receiver._id': 1,
           'receiver.name': 1,
           'lastMessage.sender._id': 1,
