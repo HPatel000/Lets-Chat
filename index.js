@@ -7,6 +7,7 @@ const chatRouter = require('./routes/chat')
 const authRouter = require('./routes/auth')
 const groupChatRouter = require('./routes/groupchat')
 const msgRouter = require('./routes/message')
+const { authenticate } = require('./middlewares/auth')
 
 const app = new express()
 const server = app.listen(5000, () => {
@@ -15,7 +16,7 @@ const server = app.listen(5000, () => {
 const io = require('socket.io')(server, {
   cors: {
     origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
   },
 })
 app.set('socketio', io)
@@ -32,6 +33,6 @@ app.get('/', (req, res) => {
 
 app.use('/auth', authRouter)
 app.use('/user', userRouter)
-app.use('/chat', chatRouter)
-app.use('/msg', msgRouter)
-app.use('/group', groupChatRouter)
+app.use('/chat', authenticate, chatRouter)
+app.use('/msg', authenticate, msgRouter)
+app.use('/group', authenticate, groupChatRouter)

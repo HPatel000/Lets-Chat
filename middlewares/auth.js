@@ -26,9 +26,11 @@ exports.isAdminofGroup = async (req, res, next) => {
     if (!group) {
       return res.status(404).json({ error: 'no group found' })
     }
-    const isUserAdmin = group.admin.indexOf(user)
-    if (isUserAdmin == -1) {
-      return res.status(400).json({ error: 'you are unauthorized' })
+    if (Chat.isGroup) {
+      const isUserAdmin = group.admin.indexOf(user)
+      if (isUserAdmin == -1) {
+        return res.status(400).json({ error: 'you are unauthorized' })
+      }
     }
     next()
   } catch (e) {
@@ -44,9 +46,11 @@ exports.isOwnerofGroup = async (req, res, next) => {
     if (!group) {
       return res.status(404).json({ error: 'no group found' })
     }
-    const isUserAdmin = group.admin.indexOf(user)
-    if (isUserAdmin == -1) {
-      return res.status(400).json({ error: 'you are unauthorized' })
+    if (Chat.isGroup) {
+      const isUserAdmin = group.admin.indexOf(user)
+      if (isUserAdmin == -1) {
+        return res.status(400).json({ error: 'you are unauthorized' })
+      }
     }
     next()
   } catch (e) {

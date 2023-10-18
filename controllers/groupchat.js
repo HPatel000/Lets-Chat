@@ -13,25 +13,6 @@ exports.getAllGroupsForUser = async (req, res) => {
   }
 }
 
-exports.getAllMessagesForGroup = async (req, res) => {
-  try {
-    const { id } = req.params
-    const allMessages = await Chat.findById(id)
-      .select('messages')
-      .populate({
-        path: 'messages',
-        select: 'message sender',
-        populate: {
-          path: 'sender',
-          select: 'name',
-        },
-      })
-    return res.status(200).json(allMessages)
-  } catch (e) {
-    return res.status(500).json({ error: 'something went wrong!' })
-  }
-}
-
 exports.getAllMembersOfGroup = async (req, res) => {
   try {
     const { id } = req.params

@@ -1,5 +1,4 @@
 const express = require('express')
-const { authenticate } = require('../middlewares/auth')
 const {
   getMessages,
   deleteMessage,
@@ -11,9 +10,9 @@ const msgRouter = express.Router()
 
 // get('/msg/*', authenticate, getMessages)
 msgRouter
-  .get('/:chatId/:page?/:limit?', authenticate, getMessages)
-  .post('/:id?', authenticate, saveMessage)
-  .put('/:id', authenticate, reactToMsg)
-  .delete('/:id', authenticate, deleteMessage)
+  .get('/:chatId/:page?/:limit?', getMessages)
+  .post('/:id?', saveMessage)
+  .put('/:id', reactToMsg)
+  .delete('/:id', deleteMessage)
 
 module.exports = msgRouter
