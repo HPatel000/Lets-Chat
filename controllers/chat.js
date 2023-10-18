@@ -61,6 +61,33 @@ exports.getUserChats = async (req, res, next) => {
         },
       },
       {
+        $lookup: {
+          from: 'users',
+          localField: 'admin',
+          foreignField: '_id',
+          as: 'admin',
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'owner',
+          foreignField: '_id',
+          as: 'owner',
+        },
+      },
+      {
+        $addFields: {
+          owner: {
+            $cond: {
+              if: { $eq: ['$isGroup', true] },
+              then: { $arrayElemAt: ['$owner', 0] },
+              else: '$$REMOVE',
+            },
+          },
+        },
+      },
+      {
         $addFields: {
           user1_0: { $arrayElemAt: ['$members', 0] },
           memlength: { $size: '$members' },
@@ -133,6 +160,46 @@ exports.getUserChats = async (req, res, next) => {
             },
           },
           isGroup: 1,
+          admin: {
+            $cond: {
+              if: { $eq: ['$isGroup', true] },
+              then: {
+                $map: {
+                  input: '$admin',
+                  as: 'admin',
+                  in: {
+                    name: '$$admin.name',
+                    _id: '$$admin._id',
+                  },
+                },
+              },
+              else: '$$REMOVE',
+            },
+          },
+          name: {
+            $cond: {
+              if: { $eq: ['$isGroup', true] },
+              then: '$name',
+              else: '$$REMOVE',
+            },
+          },
+          grpImg: {
+            $cond: {
+              if: { $eq: ['$isGroup', true] },
+              then: '$grpImg',
+              else: '$$REMOVE',
+            },
+          },
+          owner: {
+            $cond: {
+              if: { $eq: ['$isGroup', true] },
+              then: {
+                name: '$owner.name',
+                _id: '$owner._id',
+              },
+              else: '$$REMOVE',
+            },
+          },
           'sender._id': 1,
           'sender.name': 1,
           'receiver._id': 1,
