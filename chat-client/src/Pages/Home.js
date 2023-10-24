@@ -40,7 +40,9 @@ const Home = () => {
             className='single-chat'
             onClick={() => onNavigation(chat)}
           >
-            <p className='allchat-username'>{chat.sender.name}</p>
+            <p className='allchat-username'>
+              {chat.isGroup ? chat.name : chat.sender.name}
+            </p>
             {chat.lastMessage && (
               <>
                 <span>{chat.lastMessage.sender.name || 'UU'}</span>

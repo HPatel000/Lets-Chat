@@ -1,57 +1,14 @@
-/* #1F1D36 
-   #3F3351 
-    #864879
-    #E9A6A6
-*/
-
-/* 
-#2C3333
-#2E4F4F
-#0E8388
-#CBE4DE
-
-  --c1: rgb(44, 51, 51);
-  --c2: rgb(46, 79, 79);
-  --c3: rgb(14, 131, 136);
-  --c4: rgb(203, 228, 222);
-  --C1: 44, 51, 51;
-  --C2: 46, 79, 79;
-  --C3: 14, 131, 136;
-  --C4: 203, 228, 222;
- */
-/* 
-#000000
-#282A3A
-#735F32
-#C69749
-
-  --c1: rgb(0, 0, 0);
-  --c2: rgb(40, 42, 58);
-  --c3: rgb(115, 95, 50);
-  --c4: rgb(198, 151, 73);
-  --C1: 0, 0, 0;
-  --C2: 40, 42, 58;
-  --C3: 115, 95, 50;
-  --C4: 198, 151, 73;
- */
-/* 
-#000000
-#0F4C75
-#1C82AD
-#EEEEEE
- */
-
 @import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200;300;400;500;600;700;800&display=swap');
 
 :root {
-  --c1: rgb(19, 19, 19);
-  --c2: rgb(46, 79, 79);
-  --c3: rgb(14, 131, 136);
-  --c4: rgb(203, 228, 222);
-  --C1: 19, 19, 19;
-  --C2: 46, 79, 79;
-  --C3: 14, 131, 136;
-  --C4: 203, 228, 222;
+  --c1: rgb(23, 23, 23);
+  --c2: rgb(68, 68, 68);
+  --c3: rgb(25, 167, 206);
+  --c4: rgb(237, 237, 237);
+  --C1: 23, 23, 23;
+  --C2: 68, 68, 68;
+  --C3: 25, 167, 206;
+  --C4: 237, 237, 237;
   --chat-Bubble-Radius: 0.5rem;
 }
 
@@ -109,7 +66,7 @@ textarea {
   display: block;
   width: 100%;
   margin: 2rem 0;
-  background-color: var(--c4);
+  background-color: var(--c3);
   border: 1px solid var(--c3);
   border-radius: 0.5rem;
   font-size: 1.3rem;
@@ -122,7 +79,7 @@ textarea {
   text-align: center;
   text-decoration: none;
   font-size: 1.1rem;
-  color: var(--c3);
+  color: var(--c4);
 }
 
 .home {
@@ -227,7 +184,7 @@ input[type='search']:focus::-webkit-search-cancel-button {
   padding: 0.5rem;
   aspect-ratio: 1;
   font-weight: bolder;
-  background-color: rgba(var(--C3), 0.5);
+  background-color: rgba(var(--C4));
   border-radius: 100%;
 }
 
@@ -361,13 +318,13 @@ input[type='search']:focus::-webkit-search-cancel-button {
   width: 100%;
 }
 .msg-send textarea:focus {
-  outline: 2px solid var(--c4);
+  outline: 2px solid var(--c3);
 }
 
 .msg-send-icon {
   background: none;
   border: none;
-  color: var(--c4);
+  color: var(--c3);
 }
 
 .alertPopup {
