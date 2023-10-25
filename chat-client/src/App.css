@@ -227,6 +227,24 @@ input[type='search']:focus::-webkit-search-cancel-button {
   flex-direction: column;
 }
 
+.chat-section-date {
+  align-self: center;
+  margin: 1rem 0rem;
+  background-color: rgba(var(--C3), 0.5);
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.2rem;
+  font-size: 1rem;
+  color: var(--c4);
+}
+
+.is-sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+  opacity: 1;
+}
+
 .chat-bubble {
   border: 1px solid var(--c2);
   color: var(--c4);
@@ -234,8 +252,12 @@ input[type='search']:focus::-webkit-search-cancel-button {
   max-width: 80%;
   width: max-content;
   margin: 0.5rem 1rem;
-  font-size: 1rem;
+  padding: 0.2rem 1rem;
+  font-size: 1.1rem;
+  line-height: 1.5;
   position: relative;
+  display: flex;
+  gap: 5px;
 }
 
 .chat-bubble:nth-last-child(2) {
@@ -250,8 +272,12 @@ input[type='search']:focus::-webkit-search-cancel-button {
   padding: 0.2rem 0.5rem;
 }
 
-.chat-bubble-msg {
-  padding: 0.5rem 1rem;
+.chat-bubble-time {
+  margin-bottom: -2px;
+  margin-right: -10px;
+  white-space: nowrap;
+  font-size: 0.8rem;
+  align-self: flex-end;
 }
 
 .chat-bubble-left {
@@ -316,6 +342,7 @@ input[type='search']:focus::-webkit-search-cancel-button {
 
 .msg-send textarea {
   width: 100%;
+  font-size: 1.1rem;
 }
 .msg-send textarea:focus {
   outline: 2px solid var(--c3);

@@ -1,13 +1,12 @@
-import React, { useEffect, useState, useRef, useLayoutEffect } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState, useRef } from 'react'
 import SendIcon from '@mui/icons-material/Send'
 import axios from 'axios'
 import { useLocation } from 'react-router-dom'
 import io from 'socket.io-client'
+import { getDateFormate } from '../GlobalState/util'
 import ChatBubble from '../components/ChatBubble'
 
 const Chat = () => {
-  const state = useSelector((state) => state.authReducer)
   const chat = useLocation().state.chat
 
   const [messages, setMessages] = useState([])
@@ -18,6 +17,7 @@ const Chat = () => {
   const [api, setApi] = useState(null)
 
   const [position, setPosition] = useState()
+  const [date, setDate] = useState()
 
   const chatContainerRef = useRef()
 
@@ -32,6 +32,21 @@ const Chat = () => {
       }
     })
   }, [])
+
+  // useEffect(() => {
+  //   chatContainerRef.current.addEventListener('scroll', isSticky)
+  //   return () => {
+  //     chatContainerRef.current.removeEventListener('scroll', isSticky)
+  //   }
+  // })
+
+  // const isSticky = (e) => {
+  //   const header = document.querySelector('.chat-section-date')
+  //   const scrollTop = chatContainerRef.current.scrollTop
+  //   scrollTop >= 250
+  //     ? header.classList.add('is-sticky')
+  //     : header.classList.remove('is-sticky')
+  // }
 
   useEffect(() => {
     const socket = io.connect('http://localhost:5000')
@@ -79,7 +94,7 @@ const Chat = () => {
   const getAllMessages = async () => {
     if (!chat || !hasMore) return
     try {
-      const res = await axios.get(`${api}/${pageNumber}/13`)
+      const res = await axios.get(`${api}/${pageNumber}/15`)
       if (res.data.length === 0) {
         setHasMore(false)
         return
@@ -129,40 +144,36 @@ const Chat = () => {
       <div className='chat-header'>
         <h2>{chat.isGroup ? chat.name : chat.sender.name}</h2>
       </div>
-      <div
-        className='chat-section'
-        // onScroll={handleScroll}
-        ref={chatContainerRef}
-      >
+      <div className='chat-section' ref={chatContainerRef}>
         {messages &&
           messages
             .slice()
             .reverse()
             .map((msg, index) => {
-              const previousMessage = messages[index - 1]
-              const isSameDay =
-                previousMessage &&
-                new Date(previousMessage.updatedAt).toDateString() ===
-                  new Date(msg.updatedAt).toDateString()
+              let isSameDay = false
+              if (index > 0) {
+                const prevMsg = messages[messages.length - index]
+                isSameDay =
+                  prevMsg &&
+                  new Date(prevMsg.updatedAt).toDateString() ===
+                    new Date(msg.updatedAt).toDateString()
+              }
               return (
-                <>
-                  {/* {!isSameDay && <span>{getDateFormate(msg.updatedAt)}</span>} */}
-                  <div
-                    key={msg._id}
-                    className={`chat-bubble ${
-                      msg.sender._id === state.user._id
-                        ? 'chat-bubble-right'
-                        : 'chat-bubble-left'
-                    }`}
-                  >
-                    <ChatBubble
-                      msg={msg}
-                      onMsgDelete={onMsgDelete}
-                      onMsgReaction={onMsgReaction}
-                      isGroup={chat.isGroup}
-                    />
-                  </div>
-                </>
+                <React.Fragment key={msg._id}>
+                  {!isSameDay && (
+                    <>
+                      <p className='chat-section-date'>
+                        {getDateFormate(msg.updatedAt)}
+                      </p>
+                    </>
+                  )}
+                  <ChatBubble
+                    msg={msg}
+                    onMsgDelete={onMsgDelete}
+                    onMsgReaction={onMsgReaction}
+                    isGroup={chat.isGroup}
+                  />
+                </React.Fragment>
               )
             })}
       </div>
