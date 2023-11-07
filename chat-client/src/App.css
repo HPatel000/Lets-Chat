@@ -332,6 +332,16 @@ input[type='search']:focus::-webkit-search-cancel-button {
 .chat-bubble:hover .chat-bubble-actions-reaction {
   display: block !important;
 }
+
+.chat-bubble-file {
+  padding: 0.5rem;
+  padding-bottom: 0;
+}
+
+.chat-bubble-file > * {
+  max-width: 100%;
+  border-radius: 0.5rem;
+}
 .msg-send {
   display: flex;
   justify-content: space-between;
