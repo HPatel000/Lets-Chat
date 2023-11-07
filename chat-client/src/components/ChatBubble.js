@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { AddReactionOutlined, DeleteOutlineRounded } from '@mui/icons-material'
 import { getTimeFormate } from '../GlobalState/util'
 import { useSelector } from 'react-redux'
@@ -23,12 +23,27 @@ const ChatBubble = ({ msg, onMsgDelete, onMsgReaction, isGroup }) => {
           <small>{msg.sender.name} </small>
         </div>
       )}
-      <div className='chat-bubble-msg'>
-        <p>{msg.message}</p>
+      <div className='chat-bubble-content'>
+        {msg.files &&
+          msg.files.length > 0 &&
+          msg.files.map((file) => (
+            <div
+              key={file.filename}
+              className='chat-bubble-msg chat-bubble-file'
+            >
+              <small>{file.filename} </small>
+              <img src={`/image/${file.filename}`} alt='img' />
+            </div>
+          ))}
+        {msg.message && (
+          <div className='chat-bubble-msg'>
+            <p>{msg.message}</p>
+          </div>
+        )}
+        <small className='chat-bubble-time'>
+          {getTimeFormate(msg.updatedAt)}
+        </small>
       </div>
-      <small className='chat-bubble-time'>
-        {getTimeFormate(msg.updatedAt)}
-      </small>
       <AddReactionOutlined
         className='chat-bubble-actions-reaction'
         onClick={() => onMsgReaction(msg._id)}

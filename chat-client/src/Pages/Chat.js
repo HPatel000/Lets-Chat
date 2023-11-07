@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react'
 import SendIcon from '@mui/icons-material/Send'
+import AttachmentIcon from '@mui/icons-material/Attachment'
+import CodeIcon from '@mui/icons-material/Code'
 import axios from 'axios'
 import { useLocation } from 'react-router-dom'
 import io from 'socket.io-client'
 import { getDateFormate } from '../GlobalState/util'
 import ChatBubble from '../components/ChatBubble'
+import { Button } from '@mui/material'
 
 const Chat = () => {
   const chat = useLocation().state.chat
@@ -17,7 +20,8 @@ const Chat = () => {
   const [api, setApi] = useState(null)
 
   const [position, setPosition] = useState()
-  const [date, setDate] = useState()
+
+  const [files, setFiles] = useState(null)
 
   const chatContainerRef = useRef()
 
@@ -32,21 +36,6 @@ const Chat = () => {
       }
     })
   }, [])
-
-  // useEffect(() => {
-  //   chatContainerRef.current.addEventListener('scroll', isSticky)
-  //   return () => {
-  //     chatContainerRef.current.removeEventListener('scroll', isSticky)
-  //   }
-  // })
-
-  // const isSticky = (e) => {
-  //   const header = document.querySelector('.chat-section-date')
-  //   const scrollTop = chatContainerRef.current.scrollTop
-  //   scrollTop >= 250
-  //     ? header.classList.add('is-sticky')
-  //     : header.classList.remove('is-sticky')
-  // }
 
   useEffect(() => {
     const socket = io.connect('http://localhost:5000')
@@ -123,6 +112,7 @@ const Chat = () => {
     const res = await axios.post(`${api}`, json)
     if (res.data) {
       setMsgText('')
+      setFiles(null)
     }
   }
 
@@ -138,6 +128,26 @@ const Chat = () => {
     if (e.key === 'Enter' && !e.shiftKey) {
       onSendMsg()
     }
+  }
+
+  const onAttachment = async (e) => {
+    console.log(e.target.files)
+    const formData = new FormData()
+    for (let i = 0; i < e.target.files.length; i++) {
+      formData.append('file', e.target.files[i])
+    }
+    let headers = {
+      'Content-Type': 'multipart/form-data',
+    }
+    for (var pair of formData.entries()) {
+      console.log(pair[0] + ', ' + pair[1])
+    }
+
+    console.log(formData)
+    const res = await axios.post(`/msg/uploadFile/${chat._id}`, formData, {
+      headers: headers,
+    })
+    console.log(res)
   }
   return (
     <div className='chat'>
@@ -176,6 +186,27 @@ const Chat = () => {
                 </React.Fragment>
               )
             })}
+      </div>
+      <div className='msg-options'>
+        <Button
+          variant='contained'
+          component='label'
+          className='msg-options-btn'
+        >
+          <input
+            type='file'
+            style={{ display: 'none' }}
+            onChange={onAttachment}
+          />
+          <AttachmentIcon />
+        </Button>
+        <Button
+          variant='contained'
+          component='label'
+          className='msg-options-btn'
+        >
+          <CodeIcon />
+        </Button>
       </div>
       <div className='msg-send'>
         <textarea

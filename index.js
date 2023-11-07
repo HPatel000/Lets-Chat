@@ -8,6 +8,7 @@ const authRouter = require('./routes/auth')
 const groupChatRouter = require('./routes/groupchat')
 const msgRouter = require('./routes/message')
 const { authenticate } = require('./middlewares/auth')
+const imageRouter = require('./routes/files')
 
 const app = new express()
 const server = app.listen(5000, () => {
@@ -25,7 +26,8 @@ app.use(express.json())
 app.use(cors({ orgin: 'http://localhost:3000' }))
 app.use(cookieParser())
 
-connectDB()
+const gfs = connectDB()
+app.set('gfs', gfs)
 
 app.get('/', (req, res) => {
   res.send('Hello')
@@ -36,3 +38,4 @@ app.use('/user', userRouter)
 app.use('/chat', authenticate, chatRouter)
 app.use('/msg', authenticate, msgRouter)
 app.use('/group', authenticate, groupChatRouter)
+app.use('/image', authenticate, imageRouter)

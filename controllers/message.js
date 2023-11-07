@@ -35,6 +35,15 @@ exports.saveMessage = async (req, res) => {
     let chatId = req.params.id
     const user1 = req.user._id
     const { message, replyOf, sendTo } = req.body
+    const files = []
+    if (req.files) {
+      req.files.forEach((file) => {
+        files.push({
+          filename: file.filename,
+          contentType: file.contentType,
+        })
+      })
+    }
 
     if (!chatId) {
       chatId = await createChatService(user1, sendTo)
@@ -42,6 +51,7 @@ exports.saveMessage = async (req, res) => {
 
     const newMessage = await Message.create({
       chatId: chatId,
+      files: files,
       message: message,
       replyOf: replyOf,
       sender: req.user._id,
