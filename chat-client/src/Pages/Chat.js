@@ -21,12 +21,10 @@ const Chat = () => {
 
   const [position, setPosition] = useState()
 
-  const [files, setFiles] = useState(null)
-
   const chatContainerRef = useRef()
 
   useEffect(() => {
-    chatContainerRef.current.addEventListener('scroll', function() {
+    chatContainerRef.current.addEventListener('scroll', function () {
       if (chatContainerRef.current.scrollTop === 0) {
         const scrollPosition =
           chatContainerRef.current.scrollHeight -
@@ -68,7 +66,7 @@ const Chat = () => {
   }, [api, pageNumber])
 
   useEffect(() => {
-    if (pageNumber == 1) {
+    if (pageNumber === 1) {
       scrollToBottom()
     } else {
       chatContainerRef.current.scrollTop =
@@ -112,7 +110,6 @@ const Chat = () => {
     const res = await axios.post(`${api}`, json)
     if (res.data) {
       setMsgText('')
-      setFiles(null)
     }
   }
 
@@ -131,7 +128,6 @@ const Chat = () => {
   }
 
   const onAttachment = async (e) => {
-    console.log(e.target.files)
     const formData = new FormData()
     for (let i = 0; i < e.target.files.length; i++) {
       formData.append('file', e.target.files[i])
@@ -139,15 +135,9 @@ const Chat = () => {
     let headers = {
       'Content-Type': 'multipart/form-data',
     }
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ', ' + pair[1])
-    }
-
-    console.log(formData)
-    const res = await axios.post(`/msg/uploadFile/${chat._id}`, formData, {
+    await axios.post(`/msg/uploadFile/${chat._id}`, formData, {
       headers: headers,
     })
-    console.log(res)
   }
   return (
     <div className='chat'>
@@ -195,6 +185,7 @@ const Chat = () => {
         >
           <input
             type='file'
+            accept='image/*, audio/*, video/*'
             style={{ display: 'none' }}
             onChange={onAttachment}
           />

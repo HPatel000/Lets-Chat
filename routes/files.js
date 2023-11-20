@@ -7,7 +7,6 @@ fileRouter.get('/:filename', (req, res, next) => {
     const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
       bucketName: 'uploads',
     })
-    console.log(req.params.filename)
     res.setHeader('Content-Disposition', 'inline')
     const downloadStream = bucket.openDownloadStreamByName(req.params.filename)
     downloadStream.pipe(res)

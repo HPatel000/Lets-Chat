@@ -2,7 +2,6 @@ import React from 'react'
 import { AddReactionOutlined, DeleteOutlineRounded } from '@mui/icons-material'
 import { getTimeFormate } from '../GlobalState/util'
 import { useSelector } from 'react-redux'
-import { Document, Page } from 'react-pdf'
 
 const ChatBubble = ({ msg, onMsgDelete, onMsgReaction, isGroup }) => {
   const state = useSelector((state) => state.authReducer)
@@ -32,7 +31,7 @@ const ChatBubble = ({ msg, onMsgDelete, onMsgReaction, isGroup }) => {
               key={file.filename}
               className='chat-bubble-msg chat-bubble-file'
             >
-              {file.contentType === 'image/jpeg' && (
+              {file.contentType.includes('image') && (
                 <img src={`/file/${file.filename}`} alt='Chat' />
               )}
               {file.contentType.includes('audio') && (
@@ -40,23 +39,6 @@ const ChatBubble = ({ msg, onMsgDelete, onMsgReaction, isGroup }) => {
               )}
               {file.contentType.includes('video') && (
                 <video controls src={`/file/${file.filename}`} />
-              )}
-              {file.contentType.includes('pdf') && (
-                <Document file={`/file/${file.filename}`}>
-                  <Page pageNumber={1} />
-                </Document>
-              )}
-              {file.contentType.includes('pdf') && (
-                <iframe
-                  src={`/file/${file.filename}`}
-                  sandbox='allow-scripts'
-                ></iframe>
-              )}
-              {file.contentType.includes('text') && (
-                <iframe
-                  src={`/file/${file.filename}`}
-                  sandbox='allow-scripts'
-                ></iframe>
               )}
             </div>
           ))}
