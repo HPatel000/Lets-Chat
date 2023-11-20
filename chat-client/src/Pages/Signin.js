@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useState } from 'react'
+import React from 'react'
 import { useDispatch } from 'react-redux'
 import { login } from '../GlobalState/authReducer'
 import { Link, useNavigate } from 'react-router-dom'
@@ -7,13 +7,6 @@ import { Link, useNavigate } from 'react-router-dom'
 const Signin = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-
-  const [signinForm, setSigninForm] = useState({
-    name: String,
-    username: String,
-    email: String,
-    password: String,
-  })
 
   const onSignIn = async (e) => {
     e.preventDefault()
