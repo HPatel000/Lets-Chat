@@ -51,8 +51,19 @@ exports.signin = async (req, res) => {
     })
 
     sendTokenResponse(user, 200, res)
-  } catch (e) {
-    res.status(500).json({ error: 'something went wrong!' })
+  } catch (error) {
+    console.log(error)
+    let errors = {}
+    if (error.name === 'ValidationError') {
+      Object.keys(error.errors).forEach((key) => {
+        errors[key] = error.errors[key].message
+      })
+    }
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+      const field = error.message.includes('username') ? 'username' : 'email'
+      errors[field] = `${field} must be unique`
+    }
+    res.status(500).json({ error: errors })
   }
 }
 
