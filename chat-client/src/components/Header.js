@@ -2,10 +2,12 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import { ChatRounded, SearchRounded } from '@mui/icons-material'
 import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 const Header = () => {
   // header search
   const state = useSelector((state) => state.authReducer)
+  const navigate = useNavigate()
   const [searchText, setSearchText] = useState('')
   const [searchResults, setSearchResults] = useState([])
 
@@ -25,7 +27,23 @@ const Header = () => {
     return initails
   }
 
-  const onNavigation = (id) => {}
+  const onNavigation = async (user) => {
+    try {
+      const chat = await axios.get(`/chat/user/${user._id}`)
+      if (chat.data) {
+        navigate('/chat', { state: { chat: chat.data } })
+      } else {
+        navigate('/chat', {
+          state: {
+            user2: user._id,
+            chat: { sender: { name: user.name, _id: user._id } },
+          },
+        })
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
   return (
     <header className='header'>
@@ -45,7 +63,7 @@ const Header = () => {
             {searchResults.map((res) => (
               <div key={res._id}>
                 <ChatRounded />
-                <p onClick={() => onNavigation(res._id)}>{res.name}</p>
+                <p onClick={() => onNavigation(res)}>{res.name}</p>
               </div>
             ))}
           </div>

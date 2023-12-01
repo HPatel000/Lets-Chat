@@ -10,12 +10,32 @@ exports.createChatService = async (user1, user2) => {
     },
   })
   if (chat?.length) {
-    return chat[0]._id
+    return chat[0]
   } else {
     chat = await Chat.create({
       members: members,
     })
-    return chat._id
+    return chat
+  }
+}
+
+exports.getChatIdFromUsers = async (req, res, next) => {
+  try {
+    const user1 = req.user._id
+    const user2 = req.params.user
+    const members = [user1, user2]
+    let chat = await Chat.find({
+      members: {
+        $all: members,
+        $size: members.length,
+      },
+    })
+    if (chat?.length) {
+      return res.status(200).json(chat[0])
+    }
+    return res.status(200).json(null)
+  } catch (e) {
+    return res.status(500).json({ error: 'something went wrong!' })
   }
 }
 
@@ -26,6 +46,8 @@ exports.getUserChats = async (req, res, next) => {
     const limit = req.params.limit || 10
     const chat = await Chat.aggregate([
       { $match: { members: { $in: [user] } } },
+      { $skip: (page - 1) * limit },
+      { $limit: limit },
       {
         $lookup: {
           from: 'messages',
@@ -50,8 +72,39 @@ exports.getUserChats = async (req, res, next) => {
           newRoot: '$chat',
         },
       },
-      { $skip: (page - 1) * limit },
-      { $limit: limit },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'lastMessage.sender',
+          foreignField: '_id',
+          as: 'lastMessage.sender',
+        },
+      },
+      {
+        $addFields: {
+          'lastMessage.sender': { $arrayElemAt: ['$lastMessage.sender', 0] },
+        },
+      },
+      {
+        $addFields: {
+          'lastMessage.sender.name': {
+            $cond: {
+              if: {
+                $eq: ['$lastMessage.sender._id', req.user._id],
+              },
+              then: 'You',
+              else: {
+                $arrayElemAt: [
+                  {
+                    $split: ['$lastMessage.sender.name', ' '],
+                  },
+                  0,
+                ],
+              },
+            },
+          },
+        },
+      },
       {
         $lookup: {
           from: 'users',
@@ -109,39 +162,7 @@ exports.getUserChats = async (req, res, next) => {
           receiver: { $literal: req.user },
         },
       },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'lastMessage.sender',
-          foreignField: '_id',
-          as: 'lastMessage.sender',
-        },
-      },
-      {
-        $addFields: {
-          'lastMessage.sender': { $arrayElemAt: ['$lastMessage.sender', 0] },
-        },
-      },
-      {
-        $addFields: {
-          'lastMessage.sender.name': {
-            $cond: {
-              if: {
-                $eq: ['$lastMessage.sender._id', req.user._id],
-              },
-              then: 'You',
-              else: {
-                $arrayElemAt: [
-                  {
-                    $split: ['$lastMessage.sender.name', ' '],
-                  },
-                  0,
-                ],
-              },
-            },
-          },
-        },
-      },
+
       {
         $project: {
           members: {

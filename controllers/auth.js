@@ -52,7 +52,6 @@ exports.signin = async (req, res) => {
 
     sendTokenResponse(user, 200, res)
   } catch (error) {
-    console.log(error)
     let errors = {}
     if (error.name === 'ValidationError') {
       Object.keys(error.errors).forEach((key) => {

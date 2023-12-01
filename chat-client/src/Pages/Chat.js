@@ -17,7 +17,6 @@ const Chat = () => {
 
   const [pageNumber, setPageNumber] = useState(1)
   const [hasMore, setHasMore] = useState(true)
-  const [api, setApi] = useState(null)
 
   const [position, setPosition] = useState()
 
@@ -38,7 +37,7 @@ const Chat = () => {
   useEffect(() => {
     const socket = io.connect('http://localhost:5000')
     socket.on(`${chat._id}`, (payload) => {
-      if (chat) {
+      if (chat._id) {
         if (payload.event === 'added') {
           setMessages((prev) => [payload.msg, ...prev])
         } else if (payload.event === 'deleted') {
@@ -51,19 +50,11 @@ const Chat = () => {
     return () => {
       socket.disconnect()
     }
-  }, [chat])
+  }, [chat._id])
 
   useEffect(() => {
-    if (chat) {
-      setApi(`/msg/${chat._id}`)
-    }
-  }, [chat])
-
-  useEffect(() => {
-    if (api) {
-      getAllMessages()
-    }
-  }, [api, pageNumber])
+    getAllMessages()
+  }, [pageNumber])
 
   useEffect(() => {
     if (pageNumber === 1) {
@@ -79,9 +70,9 @@ const Chat = () => {
   }
 
   const getAllMessages = async () => {
-    if (!chat || !hasMore) return
+    if (!chat._id || !hasMore) return
     try {
-      const res = await axios.get(`${api}/${pageNumber}/15`)
+      const res = await axios.get(`/msg/${chat._id}/${pageNumber}/15`)
       if (res.data.length === 0) {
         setHasMore(false)
         return
@@ -104,12 +95,13 @@ const Chat = () => {
     // e.preventDefault()
     scrollToBottom()
     const json = {
-      id: chat._id,
       message: msgText,
     }
-    const res = await axios.post(`${api}`, json)
-    if (res.data) {
-      setMsgText('')
+    if (chat._id) {
+      const res = await axios.post(`/msg/${chat._id}`, json)
+      if (res.data) {
+        setMsgText('')
+      }
     }
   }
 

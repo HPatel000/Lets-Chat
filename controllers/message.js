@@ -45,12 +45,15 @@ exports.saveMessage = async (req, res) => {
       })
     }
 
-    if (!chatId) {
-      chatId = await createChatService(user1, sendTo)
+    let chat
+    if (!chatId && sendTo) {
+      chat = await createChatService(user1, sendTo)
     }
 
+    const chat_id = chat?._id ? chat._id : chatId
+
     const newMessage = await Message.create({
-      chatId: chatId,
+      chatId: chat_id,
       files: files,
       message: message,
       replyOf: replyOf,
@@ -78,7 +81,7 @@ exports.saveMessage = async (req, res) => {
         },
       },
     ])
-    req.app.get('socketio').emit(`${chatId}`, {
+    req.app.get('socketio').emit(`${chat_id}`, {
       event: 'added',
       msg: msg,
     })
