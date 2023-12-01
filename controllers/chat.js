@@ -1,4 +1,5 @@
 const Chat = require('../models/Chat')
+const mongoose = require('mongoose')
 
 exports.createChatService = async (user1, user2) => {
   const members = [user1, user2]
@@ -9,31 +10,85 @@ exports.createChatService = async (user1, user2) => {
       $size: members.length,
     },
   })
-  if (chat?.length) {
-    return chat[0]
-  } else {
+  if (!chat?.length) {
     chat = await Chat.create({
       members: members,
     })
-    return chat
   }
+
+  chat = await Chat.aggregate([
+    { $match: { _id: new mongoose.Types.ObjectId(chat._id) } },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'members',
+        foreignField: '_id',
+        as: 'members',
+      },
+    },
+    {
+      $addFields: {
+        sender: {
+          $cond: {
+            if: { $eq: ['$user1_0._id', user1] },
+            then: { $arrayElemAt: ['$members', 1] },
+            else: { $arrayElemAt: ['$members', 0] },
+          },
+        },
+        receiver: {
+          $cond: {
+            if: { $eq: ['$user1_0._id', user1] },
+            then: { $arrayElemAt: ['$members', 0] },
+            else: { $arrayElemAt: ['$members', 1] },
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        isGroup: 1,
+        'receiver._id': 1,
+        'receiver.name': 1,
+        'sender._id': 1,
+        'sender.name': 1,
+      },
+    },
+  ])
+  return chat[0]
 }
 
 exports.getChatIdFromUsers = async (req, res, next) => {
   try {
     const user1 = req.user._id
     const user2 = req.params.user
-    const members = [user1, user2]
-    let chat = await Chat.find({
-      members: {
-        $all: members,
-        $size: members.length,
-      },
-    })
-    if (chat?.length) {
-      return res.status(200).json(chat[0])
+    if (user1 && user2) {
+      const chat = await this.createChatService(user1, user2)
+      return res.status(200).json(chat)
     }
-    return res.status(200).json(null)
+    return res.status(400).json({ error: 'error in getting chat' })
+  } catch (e) {
+    return res.status(500).json({ error: 'something went wrong!' })
+  }
+}
+
+exports.deleteChatIfEmpty = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const chat = await Chat.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(id) } },
+      {
+        $lookup: {
+          from: 'messages',
+          localField: '_id',
+          foreignField: 'chatId',
+          as: 'messages',
+        },
+      },
+    ])
+    if (chat[0].messages.length == 0) {
+      await this.deleteChat(req, res, next)
+    }
+    return res.status(200)
   } catch (e) {
     return res.status(500).json({ error: 'something went wrong!' })
   }

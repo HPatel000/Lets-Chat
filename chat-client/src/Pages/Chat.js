@@ -13,6 +13,8 @@ const Chat = () => {
   const chat = useLocation().state.chat
 
   const [messages, setMessages] = useState([])
+  const messagesRef = React.createRef()
+  messagesRef.current = messages
   const [msgText, setMsgText] = useState('')
 
   const [pageNumber, setPageNumber] = useState(1)
@@ -32,6 +34,10 @@ const Chat = () => {
         setPageNumber((prev) => prev + 1)
       }
     })
+
+    return async () => {
+      if (chat) await axios.get(`/chat/checkChat/${chat._id}`)
+    }
   }, [])
 
   useEffect(() => {
@@ -63,6 +69,7 @@ const Chat = () => {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight - position
     }
+    messagesRef.current = messages
   }, [messages])
 
   const scrollToBottom = () => {

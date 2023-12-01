@@ -32,13 +32,6 @@ const Header = () => {
       const chat = await axios.get(`/chat/user/${user._id}`)
       if (chat.data) {
         navigate('/chat', { state: { chat: chat.data } })
-      } else {
-        navigate('/chat', {
-          state: {
-            user2: user._id,
-            chat: { sender: { name: user.name, _id: user._id } },
-          },
-        })
       }
     } catch (e) {
       console.error(e)
