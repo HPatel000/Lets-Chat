@@ -44,7 +44,7 @@ const Header = () => {
       <div className='header-search'>
         <input
           onChange={onSearchChange}
-          placeholder='search'
+          placeholder='search users'
           name='searchText'
           value={searchText}
           type='search'

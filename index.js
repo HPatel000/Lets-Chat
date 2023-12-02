@@ -29,10 +29,6 @@ app.use(cookieParser())
 const gfs = connectDB()
 app.set('gfs', gfs)
 
-app.get('/', (req, res) => {
-  res.send('Hello')
-})
-
 app.use('/auth', authRouter)
 app.use('/user', userRouter)
 app.use('/chat', authenticate, chatRouter)

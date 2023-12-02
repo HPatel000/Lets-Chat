@@ -1,7 +1,8 @@
 import React from 'react'
-import { AddReactionOutlined, DeleteOutlineRounded } from '@mui/icons-material'
+import { DeleteOutlineRounded } from '@mui/icons-material'
 import { getTimeFormate } from '../GlobalState/util'
 import { useSelector } from 'react-redux'
+import EmojiPicker from './EmojiPicker'
 
 const ChatBubble = ({ msg, onMsgDelete, onMsgReaction, isGroup }) => {
   const state = useSelector((state) => state.authReducer)
@@ -51,10 +52,7 @@ const ChatBubble = ({ msg, onMsgDelete, onMsgReaction, isGroup }) => {
           {getTimeFormate(msg.updatedAt)}
         </small>
       </div>
-      <AddReactionOutlined
-        className='chat-bubble-actions-reaction'
-        onClick={() => onMsgReaction(msg._id)}
-      />
+      <EmojiPicker />
     </div>
   )
 }
