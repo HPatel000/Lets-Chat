@@ -49,7 +49,14 @@ const Chat = () => {
         } else if (payload.event === 'deleted') {
           setMessages((prev) => prev.filter((msg) => msg._id !== payload.msgId))
         } else if (payload.event === 'reacted') {
-          // TODO
+          setMessages((prev) => {
+            for (let i = 0; i < prev.length; i++) {
+              if (prev[i]._id == payload.msg._id) {
+                prev[i] = payload.msg
+              }
+            }
+            return [...prev]
+          })
         }
       }
     })
@@ -69,6 +76,7 @@ const Chat = () => {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight - position
     }
+    console.log(messages)
     messagesRef.current = messages
   }, [messages])
 
@@ -117,8 +125,6 @@ const Chat = () => {
     if (res.status === 204) {
     }
   }
-
-  const onMsgReaction = async (id) => {}
 
   const onKeyUpTextArea = async (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -169,7 +175,6 @@ const Chat = () => {
                   <ChatBubble
                     msg={msg}
                     onMsgDelete={onMsgDelete}
-                    onMsgReaction={onMsgReaction}
                     isGroup={chat.isGroup}
                   />
                 </React.Fragment>

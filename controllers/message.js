@@ -113,9 +113,8 @@ exports.reactToMsg = async (req, res, next) => {
   try {
     const msgId = req.params.id
     const { reaction } = req.body
-    react = reaction.toString().substring(0, 1)
     const user = req.user._id
-    const message = await Message.findById(msgId)
+    let message = await Message.findById(msgId)
     if (!message) {
       return res.status(404).json({ error: 'no message found!' })
     }
@@ -123,20 +122,26 @@ exports.reactToMsg = async (req, res, next) => {
     // reaction will be updated without new entry
     for (let i = 0; i < message.reactions?.length; i++) {
       const r = message.reactions[i]
-      if (r.user == user) {
-        message.reactions[i].react = react
-        await message.save()
+      if (r.user.equals(user)) {
+        message.reactions[i].react = reaction
+        message = await message.save()
         return res
           .status(200)
           .json({ success: true, message: 'reaction saved' })
       }
     }
     // if no reaction found already present, new one will be created
-    message.reactions.push({ react: react, user: user._id })
-    await message.save()
-    req.app.get('socketio').emit(`${message.chatId}`, {
+    message.reactions.push({ react: reaction, user: user._id })
+    message = await message.save()
+    message = await Message.find({ _id: msgId }).populate([
+      {
+        path: 'sender',
+        select: 'name',
+      },
+    ])
+    req.app.get('socketio').emit(`${message[0].chatId}`, {
       event: 'reacted',
-      msg: message,
+      msg: message[0],
     })
     return res.status(201).json({ success: true, message: 'reaction saved' })
   } catch (e) {

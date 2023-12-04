@@ -3,9 +3,18 @@ import { DeleteOutlineRounded } from '@mui/icons-material'
 import { getTimeFormate } from '../GlobalState/util'
 import { useSelector } from 'react-redux'
 import EmojiPicker from './EmojiPicker'
+import axios from 'axios'
+import data from '@emoji-mart/data'
+import { init } from 'emoji-mart'
 
-const ChatBubble = ({ msg, onMsgDelete, onMsgReaction, isGroup }) => {
+init({ data })
+
+const ChatBubble = ({ msg, onMsgDelete, isGroup }) => {
   const state = useSelector((state) => state.authReducer)
+
+  const onMsgReaction = async (e) => {
+    const res = await axios.put(`/msg/${msg._id}`, { reaction: e.id })
+  }
 
   return (
     <div
@@ -52,7 +61,10 @@ const ChatBubble = ({ msg, onMsgDelete, onMsgReaction, isGroup }) => {
           {getTimeFormate(msg.updatedAt)}
         </small>
       </div>
-      <EmojiPicker />
+      {msg.reactions.map((reaction) => (
+        <em-emoji key={reaction._id} id={reaction.react} size='1em' />
+      ))}
+      <EmojiPicker onEmojiSelect={onMsgReaction} />
     </div>
   )
 }

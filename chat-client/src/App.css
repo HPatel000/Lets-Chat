@@ -139,7 +139,7 @@ input[type='search']:focus::-webkit-search-cancel-button {
   color: var(--c1);
   position: absolute;
   top: 0.6rem;
-  left: 0.6rem;
+  left: 0.8rem;
   transform: scale(1.2);
 }
 
@@ -190,10 +190,9 @@ input[type='search']:focus::-webkit-search-cancel-button {
 
 .single-chat {
   color: var(--c4);
-  margin: 1rem 0.5rem;
+  margin: 1rem;
   padding: 0.5rem 1rem;
-  background-color: rgba(var(--C4), 0.1);
-  border: 1px solid var(--c4);
+  background-color: rgba(var(--C4), 0.05);
   border-radius: 0.5rem;
 }
 
@@ -342,6 +341,17 @@ input[type='search']:focus::-webkit-search-cancel-button {
   max-width: 100%;
   border-radius: 0.5rem;
 }
+
+.emojipicker-wrapper {
+  position: absolute;
+  right: 0;
+}
+
+em-emoji-picker {
+  height: 60vh;
+  width: 95vw;
+}
+
 .msg-send {
   display: flex;
   justify-content: space-between;
