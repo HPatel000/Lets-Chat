@@ -2,6 +2,28 @@ const mongoose = require('mongoose')
 const Message = require('../models/Message')
 const { createChatService } = require('./chat')
 
+const msgPopulate = [
+  {
+    path: 'sender',
+    select: 'name',
+  },
+  {
+    path: 'replyOf',
+    select: '-reactions',
+    populate: {
+      path: 'sender',
+      select: 'name',
+    },
+  },
+  {
+    path: 'reactions',
+    populate: {
+      path: 'user',
+      select: 'name',
+    },
+  },
+]
+
 exports.getMessages = async (req, res) => {
   try {
     const { chatId } = req.params
@@ -15,12 +37,7 @@ exports.getMessages = async (req, res) => {
     const messages = await Message.find({})
       .where({ chatId: chatId })
       .sort({ createdAt: -1 })
-      .populate([
-        {
-          path: 'sender',
-          select: 'name',
-        },
-      ])
+      .populate(msgPopulate)
       .skip((page - 1) * limit)
       .limit(limit)
 
@@ -60,27 +77,7 @@ exports.saveMessage = async (req, res) => {
       sender: req.user._id,
     })
 
-    const msg = await Message.findById(newMessage._id).populate([
-      {
-        path: 'sender',
-        select: 'name',
-      },
-      {
-        path: 'replyOf',
-        select: '-reactions',
-        populate: {
-          path: 'sender',
-          select: 'name',
-        },
-      },
-      {
-        path: 'reactions',
-        populate: {
-          path: 'user',
-          select: 'name',
-        },
-      },
-    ])
+    const msg = await Message.findById(newMessage._id).populate(msgPopulate)
     req.app.get('socketio').emit(`${chat_id}`, {
       event: 'added',
       msg: msg,
@@ -120,25 +117,20 @@ exports.reactToMsg = async (req, res, next) => {
     }
     // check if user has already made reaction
     // reaction will be updated without new entry
-    for (let i = 0; i < message.reactions?.length; i++) {
-      const r = message.reactions[i]
-      if (r.user.equals(user)) {
-        message.reactions[i].react = reaction
-        message = await message.save()
-        return res
-          .status(200)
-          .json({ success: true, message: 'reaction saved' })
-      }
-    }
+    // for (let i = 0; i < message.reactions?.length; i++) {
+    //   const r = message.reactions[i]
+    //   if (r.user.equals(user)) {
+    //     message.reactions[i].react = reaction
+    //     await message.save()
+    //     return res
+    //       .status(200)
+    //       .json({ success: true, message: 'reaction saved' })
+    //   }
+    // }
     // if no reaction found already present, new one will be created
     message.reactions.push({ react: reaction, user: user._id })
-    message = await message.save()
-    message = await Message.find({ _id: msgId }).populate([
-      {
-        path: 'sender',
-        select: 'name',
-      },
-    ])
+    await message.save()
+    message = await Message.find({ _id: msgId }).populate(msgPopulate)
     req.app.get('socketio').emit(`${message[0].chatId}`, {
       event: 'reacted',
       msg: message[0],

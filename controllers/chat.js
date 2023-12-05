@@ -85,7 +85,7 @@ exports.deleteChatIfEmpty = async (req, res, next) => {
         },
       },
     ])
-    if (chat[0].messages.length == 0) {
+    if (chat[0].messages.length == 0 && !chat[0].isGroup) {
       await this.deleteChat(req, res, next)
     }
     return res.status(200)

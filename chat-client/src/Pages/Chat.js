@@ -110,7 +110,7 @@ const Chat = () => {
     // e.preventDefault()
     scrollToBottom()
     const json = {
-      message: msgText,
+      message: msgText.trimEnd(),
     }
     if (chat._id) {
       const res = await axios.post(`/msg/${chat._id}`, json)

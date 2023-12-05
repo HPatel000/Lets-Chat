@@ -236,14 +236,6 @@ input[type='search']:focus::-webkit-search-cancel-button {
   color: var(--c4);
 }
 
-.is-sticky {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 999;
-  opacity: 1;
-}
-
 .chat-bubble {
   border: 1px solid var(--c2);
   color: var(--c4);
@@ -342,9 +334,38 @@ input[type='search']:focus::-webkit-search-cancel-button {
   border-radius: 0.5rem;
 }
 
+.chat-bubble-reactions {
+  margin-bottom: -0.5rem;
+}
+
+.chat-bubble-reactions em-emoji {
+  margin: 0.1rem;
+  padding: 0.1rem;
+  border-radius: 100%;
+  background-color: rgba(var(--C4), 0.2);
+  position: relative;
+}
+
+.chat-bubble-reactions em-emoji:hover {
+  background-color: rgba(var(--C4), 0.8);
+}
+
+.chat-bubble-reactions em-emoji:hover::before {
+  content: attr(reacted-user);
+  position: absolute;
+  bottom: -1.5rem;
+  background-color: rgba(var(--C1), 1);
+  width: max-content;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.5rem;
+  z-index: 1;
+}
+
 .emojipicker-wrapper {
   position: absolute;
   right: 0;
+  z-index: 5;
 }
 
 em-emoji-picker {
