@@ -117,16 +117,16 @@ exports.reactToMsg = async (req, res, next) => {
     }
     // check if user has already made reaction
     // reaction will be updated without new entry
-    // for (let i = 0; i < message.reactions?.length; i++) {
-    //   const r = message.reactions[i]
-    //   if (r.user.equals(user)) {
-    //     message.reactions[i].react = reaction
-    //     await message.save()
-    //     return res
-    //       .status(200)
-    //       .json({ success: true, message: 'reaction saved' })
-    //   }
-    // }
+    for (let i = 0; i < message.reactions?.length; i++) {
+      const r = message.reactions[i]
+      if (r.user.equals(user)) {
+        message.reactions[i].react = reaction
+        await message.save()
+        return res
+          .status(200)
+          .json({ success: true, message: 'reaction saved' })
+      }
+    }
     // if no reaction found already present, new one will be created
     message.reactions.push({ react: reaction, user: user._id })
     await message.save()
