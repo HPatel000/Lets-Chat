@@ -9,7 +9,7 @@ exports.createChatService = async (user1, user2) => {
       $all: members,
       $size: members.length,
     },
-  })
+  })[0]
   if (!chat?.length) {
     chat = await Chat.create({
       members: members,

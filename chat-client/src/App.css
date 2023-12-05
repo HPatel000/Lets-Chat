@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200;300;400;500;600;700;800&display=swap');
 
+/* #9E0031 */
+/* #F7F7FF */
+/* #272635 */
+/* #F2D0A4 */
 :root {
   --c1: rgb(23, 23, 23);
   --c2: rgb(68, 68, 68);
@@ -93,8 +97,7 @@ textarea {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  color: var(--c1);
-  background-color: var(--c4);
+  background-color: var(--c2);
 }
 
 .header-search {
@@ -103,11 +106,11 @@ textarea {
 
 .header-search input {
   outline: 1px solid var(--c1);
-  color: var(--c1);
   font-size: 1.3rem;
   padding: 0.5rem 1rem;
   padding-left: 3rem;
   border-radius: 10rem;
+  border: 1px solid var(--c2);
 }
 
 .header-search input:focus {
@@ -181,6 +184,7 @@ input[type='search']:focus::-webkit-search-cancel-button {
 
 .header-userintiails {
   border: 2px solid var(--c1);
+  color: var(--c1);
   padding: 0.5rem;
   aspect-ratio: 1;
   font-weight: bolder;
@@ -212,10 +216,9 @@ input[type='search']:focus::-webkit-search-cancel-button {
 }
 
 .chat-header {
-  color: var(--c1);
-  background-color: var(--c4);
-  /* border-radius: 0 0 1rem 1rem; */
+  background-color: var(--c2);
   padding: 1rem 2rem;
+  color: var(--c1);
 }
 
 .chat-section {
