@@ -2,12 +2,18 @@ import React, { useEffect, useState, useRef } from 'react'
 import SendIcon from '@mui/icons-material/Send'
 import AttachmentIcon from '@mui/icons-material/Attachment'
 import CodeIcon from '@mui/icons-material/Code'
-import axios from 'axios'
 import { useLocation } from 'react-router-dom'
 import io from 'socket.io-client'
 import { getDateFormate } from '../GlobalState/util'
 import ChatBubble from '../components/ChatBubble'
 import { Button } from '@mui/material'
+import { checkChatAtUnmount } from '../services/chat'
+import {
+  deleteMessage,
+  getMessagesWithPagination,
+  saveMessage,
+  sendAttachment,
+} from '../services/message'
 
 const Chat = () => {
   const chat = useLocation().state.chat
@@ -36,7 +42,7 @@ const Chat = () => {
     })
 
     return async () => {
-      if (chat) await axios.get(`/chat/checkChat/${chat._id}`)
+      if (chat) await checkChatAtUnmount(chat._id)
     }
   }, [])
 
@@ -87,7 +93,7 @@ const Chat = () => {
   const getAllMessages = async () => {
     if (!chat._id || !hasMore) return
     try {
-      const res = await axios.get(`/msg/${chat._id}/${pageNumber}/15`)
+      const res = await getMessagesWithPagination(chat._id, pageNumber, 15)
       if (res.data.length === 0) {
         setHasMore(false)
         return
@@ -113,7 +119,7 @@ const Chat = () => {
       message: msgText.trimEnd(),
     }
     if (chat._id) {
-      const res = await axios.post(`/msg/${chat._id}`, json)
+      const res = await saveMessage(chat._id, json)
       if (res.data) {
         setMsgText('')
       }
@@ -121,7 +127,7 @@ const Chat = () => {
   }
 
   const onMsgDelete = async (id) => {
-    const res = await axios.delete(`/msg/${id}`)
+    const res = await deleteMessage(id)
     if (res.status === 204) {
     }
   }
@@ -137,12 +143,7 @@ const Chat = () => {
     for (let i = 0; i < e.target.files.length; i++) {
       formData.append('file', e.target.files[i])
     }
-    let headers = {
-      'Content-Type': 'multipart/form-data',
-    }
-    await axios.post(`/msg/uploadFile/${chat._id}`, formData, {
-      headers: headers,
-    })
+    await sendAttachment(chat._id, formData)
   }
   return (
     <div className='chat'>

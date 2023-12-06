@@ -1,8 +1,9 @@
-import axios from 'axios'
 import React, { useState } from 'react'
 import { ChatRounded, SearchRounded } from '@mui/icons-material'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { searchusers } from '../services/user'
+import { getChatIdFromUsers } from '../services/chat'
 
 const Header = () => {
   // header search
@@ -14,7 +15,7 @@ const Header = () => {
   const onSearchChange = async (e) => {
     setSearchText(e.target.value)
     if (e.target.value) {
-      const res = await axios.get(`/user/${String(e.target.value)}`)
+      const res = await searchusers(e.target.value)
       setSearchResults(res.data.data)
     } else setSearchResults([])
   }
@@ -29,7 +30,7 @@ const Header = () => {
 
   const onNavigation = async (user) => {
     try {
-      const chat = await axios.get(`/chat/user/${user._id}`)
+      const chat = await getChatIdFromUsers(user._id)
       if (chat.data) {
         navigate('/chat', { state: { chat: chat.data } })
       }

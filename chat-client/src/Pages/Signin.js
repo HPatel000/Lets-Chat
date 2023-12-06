@@ -1,8 +1,8 @@
-import axios from 'axios'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { login } from '../GlobalState/authReducer'
 import { Link, useNavigate } from 'react-router-dom'
+import { SignIn } from '../services/user'
 
 const Signin = () => {
   const dispatch = useDispatch()
@@ -10,13 +10,13 @@ const Signin = () => {
 
   const onSignIn = async (e) => {
     e.preventDefault()
-    const signinJson = {
+    const json = {
       name: e.target.name.value,
       username: e.target.username.value,
       email: e.target.email.value,
       password: e.target.password.value,
     }
-    const res = await axios.post('/auth/signin', signinJson)
+    const res = await SignIn(json)
     if (res.status === 200) {
       dispatch(login(res.data.data))
       navigate('/')

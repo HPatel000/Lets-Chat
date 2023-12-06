@@ -97,7 +97,7 @@ textarea {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  background-color: var(--c2);
+  background-color: var(--c4);
 }
 
 .header-search {
@@ -106,6 +106,7 @@ textarea {
 
 .header-search input {
   outline: 1px solid var(--c1);
+  color: var(--c1);
   font-size: 1.3rem;
   padding: 0.5rem 1rem;
   padding-left: 3rem;
@@ -154,7 +155,7 @@ input[type='search']:focus::-webkit-search-cancel-button {
   margin-top: 0.5rem;
   border-radius: 0.5rem;
   position: absolute;
-  width: 70%;
+  width: 100%;
   word-wrap: break-word;
   max-height: 80vh;
   overflow-y: auto;
@@ -216,7 +217,7 @@ input[type='search']:focus::-webkit-search-cancel-button {
 }
 
 .chat-header {
-  background-color: var(--c2);
+  background-color: var(--c4);
   padding: 1rem 2rem;
   color: var(--c1);
 }

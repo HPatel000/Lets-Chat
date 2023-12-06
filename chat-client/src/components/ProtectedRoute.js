@@ -1,8 +1,8 @@
-import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Navigate } from 'react-router-dom'
 import { login } from '../GlobalState/authReducer'
+import { checkUserAuthentication } from '../services/user'
 
 const ProtectedRoute = ({ children }) => {
   const dispatch = useDispatch()
@@ -10,8 +10,7 @@ const ProtectedRoute = ({ children }) => {
   const [isLoading, setLoading] = useState(true)
 
   useEffect(() => {
-    axios
-      .get('/auth/checkuser')
+    checkUserAuthentication()
       .then((res) => {
         if (res.data) {
           dispatch(login(res.data))

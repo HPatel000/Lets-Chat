@@ -3,20 +3,17 @@ import { DeleteOutlineRounded } from '@mui/icons-material'
 import { getTimeFormate } from '../GlobalState/util'
 import { useSelector } from 'react-redux'
 import EmojiPicker from './EmojiPicker'
-import axios from 'axios'
 import data from '@emoji-mart/data'
 import { init } from 'emoji-mart'
-import Tooltip from '@mui/material/Tooltip'
+import { reactMessage } from '../services/message'
 
 init({ data })
 
 const ChatBubble = ({ msg, onMsgDelete, isGroup }) => {
   const state = useSelector((state) => state.authReducer)
 
-  const [showTooltip, setShowTooltip] = useState(false)
-
   const onMsgReaction = async (e) => {
-    const res = await axios.put(`/msg/${msg._id}`, { reaction: e.id })
+    await reactMessage(msg._id, e.id)
   }
 
   return (

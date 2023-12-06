@@ -4,13 +4,15 @@ const mongoose = require('mongoose')
 exports.createChatService = async (user1, user2) => {
   const members = [user1, user2]
 
-  let chat = await Chat.find({
-    members: {
-      $all: members,
-      $size: members.length,
-    },
-  })[0]
-  if (!chat?.length) {
+  let chat = (
+    await Chat.find({
+      members: {
+        $all: members,
+        $size: members.length,
+      },
+    })
+  )[0]
+  if (!chat) {
     chat = await Chat.create({
       members: members,
     })
@@ -62,7 +64,10 @@ exports.getChatIdFromUsers = async (req, res, next) => {
     const user1 = req.user._id
     const user2 = req.params.user
     if (user1 && user2) {
-      const chat = await this.createChatService(user1, user2)
+      const chat = await this.createChatService(
+        user1.toString(),
+        user2.toString()
+      )
       return res.status(200).json(chat)
     }
     return res.status(400).json({ error: 'error in getting chat' })

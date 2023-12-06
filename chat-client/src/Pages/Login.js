@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import axios from 'axios'
 import { login } from '../GlobalState/authReducer'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import Alert from '../components/Alert'
+import { LogIn } from '../services/user'
 
 const Login = () => {
   const dispatch = useDispatch()
@@ -22,12 +22,12 @@ const Login = () => {
 
   const onLogIn = async (e) => {
     e.preventDefault()
-    const logInJson = {
+    const json = {
       username: loginForm.username,
       password: loginForm.password,
     }
     try {
-      const res = await axios.post('/auth/login', logInJson)
+      const res = await LogIn(json)
       dispatch(login(res.data.data))
       navigate('/')
     } catch (e) {

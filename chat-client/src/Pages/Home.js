@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import axios from '../HttpInterceptor'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
+import { getCurrUserChats } from '../services/chat'
 
 const Home = () => {
   // allchat
@@ -14,7 +14,7 @@ const Home = () => {
 
   const getAllChat = async () => {
     try {
-      const res = await axios.get('/chat')
+      const res = await getCurrUserChats()
       if (res.data) {
         setAllchat(res.data)
       } else {
