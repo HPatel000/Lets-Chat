@@ -368,8 +368,17 @@ input[type='search']:focus::-webkit-search-cancel-button {
 
 .emojipicker-wrapper {
   position: absolute;
-  right: 0;
   z-index: 5;
+}
+
+.chat-bubble-right .emojipicker-wrapper {
+  right: 0;
+  left: unset;
+}
+
+.chat-bubble-left .emojipicker-wrapper {
+  left: 0;
+  right: unset;
 }
 
 em-emoji-picker {
