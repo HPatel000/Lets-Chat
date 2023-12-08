@@ -96,6 +96,7 @@ textarea {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   padding: 1.5rem;
   background-color: var(--c4);
   color: var(--c1);

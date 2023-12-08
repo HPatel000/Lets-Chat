@@ -219,6 +219,7 @@ exports.getUserChats = async (req, res, next) => {
       ...lastMessageAggregation(req.user._id),
       ...singleChatAggregation(req.user._id),
       ...groupChatAggregation(),
+      { $sort: { 'lastMessage.updatedAt': -1 } },
       {
         $project: {
           members: {
