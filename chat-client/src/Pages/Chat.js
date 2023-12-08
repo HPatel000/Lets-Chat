@@ -44,7 +44,7 @@ const Chat = () => {
     return async () => {
       if (chat) await checkChatAtUnmount(chat._id)
     }
-  }, [])
+  }, [chat])
 
   useEffect(() => {
     const socket = io.connect('http://localhost:5000')
@@ -57,7 +57,7 @@ const Chat = () => {
         } else if (payload.event === 'reacted') {
           setMessages((prev) => {
             for (let i = 0; i < prev.length; i++) {
-              if (prev[i]._id == payload.msg._id) {
+              if (prev[i]._id === payload.msg._id) {
                 prev[i] = payload.msg
               }
             }
@@ -82,9 +82,8 @@ const Chat = () => {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight - position
     }
-    console.log(messages)
     messagesRef.current = messages
-  }, [messages])
+  }, [messages, messagesRef, pageNumber, position])
 
   const scrollToBottom = () => {
     chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight

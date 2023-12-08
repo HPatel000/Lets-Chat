@@ -11,3 +11,7 @@ export const getCurrUserChats = () => {
 export const getChatIdFromUsers = (user) => {
   return axios.get(`/chat/user/${user}`)
 }
+
+export const createGroup = (json) => {
+  return axios.post(`/group`, json)
+}

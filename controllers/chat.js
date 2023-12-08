@@ -80,7 +80,7 @@ const lastMessageAggregation = (userId) => [
       as: 'lastMessage',
     },
   },
-  { $unwind: '$lastMessage' },
+  { $unwind: { path: '$lastMessage', preserveNullAndEmptyArrays: true } },
   { $sort: { 'lastMessage.createdAt': -1 } },
   {
     $group: {

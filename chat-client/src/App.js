@@ -6,6 +6,7 @@ import Chat from './Pages/Chat'
 import Login from './Pages/Login'
 import Signin from './Pages/Signin'
 import Home from './Pages/Home'
+import CreateGroup from './components/CreateGroup'
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
         <Chat />
       </ProtectedRoute>
     ),
+  },
+  {
+    path: '/create-group',
+    element: <CreateGroup />,
   },
   {
     path: '/login',
