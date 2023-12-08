@@ -18,10 +18,9 @@ exports.searchUserByUsername = async (req, res) => {
           },
         },
       ],
-    }).select('name')
+    }).select('name username')
     return res.status(200).json({ count: allUsers.length, data: allUsers })
   } catch (e) {
-    console.log(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }

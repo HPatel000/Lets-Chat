@@ -1,17 +1,150 @@
 const Chat = require('../models/Chat')
 const mongoose = require('mongoose')
 
+exports.singleChatAggregation = (userId) => [
+  {
+    $lookup: {
+      from: 'users',
+      localField: 'members',
+      foreignField: '_id',
+      as: 'members',
+    },
+  },
+  {
+    $addFields: {
+      user1_0: { $arrayElemAt: ['$members', 0] },
+    },
+  },
+  {
+    $addFields: {
+      sender: {
+        $cond: [
+          {
+            $and: [
+              { $eq: ['$user1_0._id', userId] },
+              { $eq: ['$isGroup', false] },
+              { $eq: [{ $size: '$members' }, 2] },
+            ],
+          },
+          { $arrayElemAt: ['$members', 1] },
+          { $arrayElemAt: ['$members', 0] },
+        ],
+      },
+      receiver: {
+        $cond: {
+          if: { $eq: ['$user1_0._id', userId] },
+          then: { $arrayElemAt: ['$members', 0] },
+          else: { $arrayElemAt: ['$members', 1] },
+        },
+      },
+    },
+  },
+]
+
+exports.groupChatAggregation = () => [
+  {
+    $lookup: {
+      from: 'users',
+      localField: 'admin',
+      foreignField: '_id',
+      as: 'admin',
+    },
+  },
+  {
+    $lookup: {
+      from: 'users',
+      localField: 'owner',
+      foreignField: '_id',
+      as: 'owner',
+    },
+  },
+  {
+    $addFields: {
+      owner: {
+        $cond: {
+          if: { $eq: ['$isGroup', true] },
+          then: { $arrayElemAt: ['$owner', 0] },
+          else: '$$REMOVE',
+        },
+      },
+    },
+  },
+]
+
+exports.lastMessageAggregation = (userId) => [
+  {
+    $lookup: {
+      from: 'messages',
+      localField: '_id',
+      foreignField: 'chatId',
+      as: 'lastMessage',
+    },
+  },
+  { $unwind: '$lastMessage' },
+  { $sort: { 'lastMessage.createdAt': -1 } },
+  {
+    $group: {
+      _id: '$_id',
+      chat: { $first: '$$ROOT' },
+    },
+  },
+  {
+    $unwind: '$chat',
+  },
+  {
+    $replaceRoot: {
+      newRoot: '$chat',
+    },
+  },
+  {
+    $lookup: {
+      from: 'users',
+      localField: 'lastMessage.sender',
+      foreignField: '_id',
+      as: 'lastMessage.sender',
+    },
+  },
+  {
+    $addFields: {
+      'lastMessage.sender': { $arrayElemAt: ['$lastMessage.sender', 0] },
+    },
+  },
+  {
+    $addFields: {
+      'lastMessage.sender.name': {
+        $cond: {
+          if: {
+            $eq: ['$lastMessage.sender._id', userId],
+          },
+          then: 'You',
+          else: {
+            $arrayElemAt: [
+              {
+                $split: ['$lastMessage.sender.name', ' '],
+              },
+              0,
+            ],
+          },
+        },
+      },
+    },
+  },
+]
+
 exports.createChatService = async (user1, user2) => {
   const members = [user1, user2]
 
-  let chat = (
-    await Chat.find({
-      members: {
-        $all: members,
-        $size: members.length,
-      },
-    })
-  )[0]
+  if (user1 === user2) {
+    members.splice(1, 1)
+  }
+
+  let chat = await Chat.find({
+    members: {
+      $all: members,
+      $size: members.length,
+    },
+  })
+  chat = chat[0]
   if (!chat) {
     chat = await Chat.create({
       members: members,
@@ -20,32 +153,7 @@ exports.createChatService = async (user1, user2) => {
 
   chat = await Chat.aggregate([
     { $match: { _id: new mongoose.Types.ObjectId(chat._id) } },
-    {
-      $lookup: {
-        from: 'users',
-        localField: 'members',
-        foreignField: '_id',
-        as: 'members',
-      },
-    },
-    {
-      $addFields: {
-        sender: {
-          $cond: {
-            if: { $eq: ['$user1_0._id', user1] },
-            then: { $arrayElemAt: ['$members', 1] },
-            else: { $arrayElemAt: ['$members', 0] },
-          },
-        },
-        receiver: {
-          $cond: {
-            if: { $eq: ['$user1_0._id', user1] },
-            then: { $arrayElemAt: ['$members', 0] },
-            else: { $arrayElemAt: ['$members', 1] },
-          },
-        },
-      },
-    },
+    ...singleChatAggregation(user1),
     {
       $project: {
         isGroup: 1,
@@ -108,121 +216,9 @@ exports.getUserChats = async (req, res, next) => {
       { $match: { members: { $in: [user] } } },
       { $skip: (page - 1) * limit },
       { $limit: limit },
-      {
-        $lookup: {
-          from: 'messages',
-          localField: '_id',
-          foreignField: 'chatId',
-          as: 'lastMessage',
-        },
-      },
-      { $unwind: '$lastMessage' },
-      { $sort: { 'lastMessage.createdAt': -1 } },
-      {
-        $group: {
-          _id: '$_id',
-          chat: { $first: '$$ROOT' },
-        },
-      },
-      {
-        $unwind: '$chat',
-      },
-      {
-        $replaceRoot: {
-          newRoot: '$chat',
-        },
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'lastMessage.sender',
-          foreignField: '_id',
-          as: 'lastMessage.sender',
-        },
-      },
-      {
-        $addFields: {
-          'lastMessage.sender': { $arrayElemAt: ['$lastMessage.sender', 0] },
-        },
-      },
-      {
-        $addFields: {
-          'lastMessage.sender.name': {
-            $cond: {
-              if: {
-                $eq: ['$lastMessage.sender._id', req.user._id],
-              },
-              then: 'You',
-              else: {
-                $arrayElemAt: [
-                  {
-                    $split: ['$lastMessage.sender.name', ' '],
-                  },
-                  0,
-                ],
-              },
-            },
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'members',
-          foreignField: '_id',
-          as: 'members',
-        },
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'admin',
-          foreignField: '_id',
-          as: 'admin',
-        },
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'owner',
-          foreignField: '_id',
-          as: 'owner',
-        },
-      },
-      {
-        $addFields: {
-          owner: {
-            $cond: {
-              if: { $eq: ['$isGroup', true] },
-              then: { $arrayElemAt: ['$owner', 0] },
-              else: '$$REMOVE',
-            },
-          },
-        },
-      },
-      {
-        $addFields: {
-          user1_0: { $arrayElemAt: ['$members', 0] },
-        },
-      },
-      {
-        $addFields: {
-          sender: {
-            $cond: {
-              if: {
-                $and: [
-                  { $eq: ['$user1_0._id', req.user._id] },
-                  { $eq: ['$isGroup', false] },
-                ],
-              },
-              then: { $arrayElemAt: ['$members', 1] },
-              else: { $arrayElemAt: ['$members', 0] },
-            },
-          },
-          receiver: { $literal: req.user },
-        },
-      },
-
+      ...lastMessageAggregation(req.user._id),
+      ...singleChatAggregation(req.user._id),
+      ...groupChatAggregation(),
       {
         $project: {
           members: {
