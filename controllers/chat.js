@@ -1,7 +1,7 @@
 const Chat = require('../models/Chat')
 const mongoose = require('mongoose')
 
-exports.singleChatAggregation = (userId) => [
+const singleChatAggregation = (userId) => [
   {
     $lookup: {
       from: 'users',
@@ -41,7 +41,7 @@ exports.singleChatAggregation = (userId) => [
   },
 ]
 
-exports.groupChatAggregation = () => [
+const groupChatAggregation = () => [
   {
     $lookup: {
       from: 'users',
@@ -71,7 +71,7 @@ exports.groupChatAggregation = () => [
   },
 ]
 
-exports.lastMessageAggregation = (userId) => [
+const lastMessageAggregation = (userId) => [
   {
     $lookup: {
       from: 'messages',
