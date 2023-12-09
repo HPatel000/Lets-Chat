@@ -32,12 +32,29 @@ html {
 }
 
 body {
-  background-color: var(--c1);
+  background-color: black;
   font-size: 1.5rem;
   color: var(--c4);
   overflow: hidden;
+  width: 100vw;
+  height: 100vh;
 }
 
+#root {
+  position: relative;
+  background-color: var(--c1);
+  max-width: 30rem;
+  height: 50rem;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#root > * {
+  flex-grow: 1;
+  height: 100%;
+}
 input,
 textarea {
   display: block;
@@ -57,7 +74,7 @@ textarea {
   align-items: center;
   flex-direction: column;
   gap: 2rem;
-  height: 85vh;
+  /* height: 85vh; */
 }
 
 .authentication input {
@@ -87,9 +104,10 @@ textarea {
 }
 
 .home {
+  flex-grow: 1;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  height: 100vh;
 }
 
 .header {
@@ -162,7 +180,7 @@ input[type='search']:focus::-webkit-search-cancel-button {
   position: absolute;
   width: 100%;
   word-wrap: break-word;
-  max-height: 80vh;
+  max-height: 80%;
   overflow-y: auto;
 }
 
@@ -226,7 +244,7 @@ input[type='search']:focus::-webkit-search-cancel-button {
 .chat {
   display: flex;
   flex-direction: column;
-  height: 99vh;
+  height: 96%;
 }
 
 .chat-header {
@@ -395,8 +413,8 @@ input[type='search']:focus::-webkit-search-cancel-button {
 }
 
 em-emoji-picker {
-  height: 60vh;
-  width: 95vw;
+  width: 90%;
+  max-height: 35rem;
 }
 
 .msg-send {
