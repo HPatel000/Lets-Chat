@@ -140,9 +140,9 @@ exports.createChatService = async (user1, user2) => {
 
   let chat = await Chat.find({
     members: {
-      $all: members,
-      $size: members.length,
+      $eq: members,
     },
+    isGroup: false,
   })
   chat = chat[0]
   if (!chat) {
