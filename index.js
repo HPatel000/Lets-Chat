@@ -16,14 +16,14 @@ const server = app.listen(5000, () => {
 })
 const io = require('socket.io')(server, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: process.env.URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   },
 })
 app.set('socketio', io)
 
 app.use(express.json())
-app.use(cors({ orgin: 'http://localhost:3000' }))
+app.use(cors({ orgin: process.env.URL }))
 app.use(cookieParser())
 
 const gfs = connectDB()

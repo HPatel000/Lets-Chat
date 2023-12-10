@@ -4,7 +4,7 @@ const { Binary } = require('mongodb')
 
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/MERNCRUD')
+    await mongoose.connect(process.env.MONGO_URI)
     console.log('MongoDB connected...')
   } catch (error) {
     console.error(error)

@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken')
-const env = require('../env')
 const User = require('../models/User')
 const Chat = require('../models/Chat')
 
@@ -10,7 +9,7 @@ exports.authenticate = async (req, res, next) => {
       return res.status(401).json({ error: 'Unautorized Access' })
     }
 
-    const decode = jwt.verify(token, env.JWT_SECRET)
+    const decode = jwt.verify(token, process.env.JWT_SECRET)
     req.user = await User.findById(decode.id)
     next()
   } catch (e) {

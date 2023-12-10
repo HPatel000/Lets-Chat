@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux'
 import SearchUsers from './SearchUsers'
 import { useNavigate } from 'react-router-dom'
 import { getChatIdFromUsers } from '../services/chat'
+import LogoutIcon from '@mui/icons-material/Logout'
+import { LogOut } from '../services/user'
 
 const Header = () => {
   // header search
@@ -28,6 +30,13 @@ const Header = () => {
     }
   }
 
+  const onLogout = async () => {
+    const res = await LogOut()
+    if (!res.error) {
+      navigate('/login')
+    }
+  }
+
   return (
     <header className='header'>
       {/* <div>App Logo</div> */}
@@ -35,6 +44,7 @@ const Header = () => {
       <div className='header-userintiails'>
         {getUserInitails(state.user.name)}
       </div>
+      <LogoutIcon onClick={onLogout} />
     </header>
   )
 }

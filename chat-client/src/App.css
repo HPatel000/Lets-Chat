@@ -38,14 +38,18 @@ body {
   overflow: hidden;
   width: 100vw;
   height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #root {
   position: relative;
   background-color: var(--c1);
-  max-width: 30rem;
-  height: 50rem;
+  max-width: 50rem;
+  height: 100%;
   margin: auto;
+  flex-grow: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -217,6 +221,9 @@ input[type='search']:focus::-webkit-search-cancel-button {
   aspect-ratio: 1;
   font-weight: bolder;
   background-color: rgba(var(--C4));
+  width: 3rem;
+  aspect-ratio: 1;
+  text-align: center;
   border-radius: 100%;
 }
 
@@ -423,6 +430,7 @@ em-emoji-picker {
   align-items: center;
   gap: 1rem;
   margin: 0.5rem 1rem;
+  margin-bottom: 1rem;
 }
 
 .msg-content {

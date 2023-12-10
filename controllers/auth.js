@@ -1,5 +1,4 @@
 const User = require('../models/User')
-const env = require('../env')
 
 exports.login = async (req, res) => {
   const { username, password } = req.body
@@ -94,13 +93,15 @@ const sendTokenResponse = (user, statusCode, res) => {
   const token = user.getSignedJwtToken()
 
   const options = {
-    expires: new Date(Date.now() + env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
+    expires: new Date(
+      Date.now() + +process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+    ),
     httpOnly: true,
   }
 
-  // if (env.NODE_ENV === 'production') {
-  //   options.secure = true
-  // }
+  if (process.env.NODE_ENV === 'production') {
+    options.secure = true
+  }
 
   res
     .status(statusCode)
