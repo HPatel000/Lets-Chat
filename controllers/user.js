@@ -21,6 +21,7 @@ exports.searchUserByUsername = async (req, res) => {
     }).select('name username')
     return res.status(200).json({ count: allUsers.length, data: allUsers })
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -33,6 +34,7 @@ exports.updateUser = async (req, res) => {
     })
     return res.status(200).json(user)
   } catch (e) {
+    console.error(e)
     console.log(e)
     if (e.code == 11000) {
       return res.status(500).json({ error: 'Duplicate Email' })
@@ -47,6 +49,7 @@ exports.deleteUser = async (req, res) => {
     await User.findByIdAndDelete(id)
     return res.status(200).json({ message: 'User deleted successfully' })
   } catch (e) {
+    console.error(e)
     console.log(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }

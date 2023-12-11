@@ -13,6 +13,7 @@ exports.authenticate = async (req, res, next) => {
     req.user = await User.findById(decode.id)
     next()
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -33,6 +34,7 @@ exports.isAdminofGroup = async (req, res, next) => {
     }
     next()
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -53,6 +55,7 @@ exports.isOwnerofGroup = async (req, res, next) => {
     }
     next()
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }

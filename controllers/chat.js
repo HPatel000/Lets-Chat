@@ -180,6 +180,8 @@ exports.getChatIdFromUsers = async (req, res, next) => {
     }
     return res.status(400).json({ error: 'error in getting chat' })
   } catch (e) {
+    console.error(e)
+
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -203,6 +205,8 @@ exports.deleteChatIfEmpty = async (req, res, next) => {
     }
     return res.status(200)
   } catch (e) {
+    console.error(e)
+
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -301,6 +305,8 @@ exports.getUserChats = async (req, res, next) => {
 
     return res.status(200).json(chat)
   } catch (e) {
+    console.error(e)
+
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -311,6 +317,8 @@ exports.deleteChat = async (req, res) => {
     await Chat.findByIdAndDelete(id)
     return res.status(204).json({})
   } catch (e) {
+    console.error(e)
+
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }

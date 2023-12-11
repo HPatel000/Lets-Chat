@@ -43,6 +43,7 @@ exports.getMessages = async (req, res) => {
 
     return res.status(200).json(messages)
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -85,6 +86,7 @@ exports.saveMessage = async (req, res) => {
 
     return res.status(201).json(msg)
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -102,6 +104,7 @@ exports.deleteMessage = async (req, res) => {
     })
     return res.status(204).json({})
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -135,6 +138,7 @@ exports.reactToMsg = async (req, res, next) => {
     })
     return res.status(201).json({ success: true, message: 'reaction saved' })
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }

@@ -26,6 +26,7 @@ exports.login = async (req, res) => {
 
     sendTokenResponse(user, 200, res)
   } catch (e) {
+    console.error(e)
     res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -51,6 +52,7 @@ exports.signin = async (req, res) => {
 
     sendTokenResponse(user, 200, res)
   } catch (error) {
+    console.error(error)
     let errors = {}
     if (error.name === 'ValidationError') {
       Object.keys(error.errors).forEach((key) => {
@@ -76,6 +78,7 @@ exports.logout = async (req, res) => {
       data: {},
     })
   } catch (e) {
+    console.error(e)
     res.status(500).json({ error: 'something went wrong!' })
   }
 }

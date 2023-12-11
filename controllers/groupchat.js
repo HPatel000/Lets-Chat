@@ -9,6 +9,7 @@ exports.getAllGroupsForUser = async (req, res) => {
     })
     return res.status(200).json(grps)
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -21,6 +22,7 @@ exports.getAllMembersOfGroup = async (req, res) => {
       .populate('members')
     return res.status(200).json(allMembers)
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -31,6 +33,7 @@ exports.getOwnerOfGroup = async (req, res) => {
     const owner = await Chat.findById(id).select('owner').populate('owner')
     return res.status(200).json(owner)
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -41,6 +44,7 @@ exports.getAdminOfGroup = async (req, res) => {
     const allAdmin = await Chat.findById(id).select('admin').populate('admin')
     return res.status(200).json(allAdmin)
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -62,6 +66,7 @@ exports.createGroup = async (req, res) => {
 
     return res.status(201).json({ message: `Group ${name} created` })
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -81,6 +86,7 @@ exports.addMemberToGroup = async (req, res) => {
     await group.save()
     return res.status(200).json({ message: 'user added successfully' })
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -107,6 +113,7 @@ exports.removeMemberFromGroup = async (req, res) => {
       message: `${members.length} members are removed from ${group.name} group`,
     })
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -141,6 +148,7 @@ exports.leaveGroup = async (req, res) => {
       .status(200)
       .json({ success: true, message: `you left ${group.name} group` })
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -164,6 +172,7 @@ exports.makeMemberAdminOfGroup = async (req, res) => {
       .status(200)
       .json({ success: true, message: 'new admin added to group' })
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -193,6 +202,7 @@ exports.removeMemberAsAdminOfGroup = async (req, res) => {
       .status(200)
       .json({ success: true, message: 'member removed from admin' })
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -219,6 +229,7 @@ exports.updateGroupName = async (req, res) => {
       .status(200)
       .json({ success: true, message: `group name changed to ${group.name}` })
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -246,6 +257,7 @@ exports.updateGroupImage = async (req, res) => {
       .status(200)
       .json({ success: true, message: `group profile changed` })
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
@@ -264,6 +276,7 @@ exports.deleteGroup = async (req, res) => {
       .status(200)
       .json({ success: true, message: `${group.name} deleted` })
   } catch (e) {
+    console.error(e)
     return res.status(500).json({ error: 'something went wrong!' })
   }
 }
