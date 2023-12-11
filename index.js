@@ -35,3 +35,9 @@ app.use('/chat', authenticate, chatRouter)
 app.use('/msg', authenticate, msgRouter)
 app.use('/group', authenticate, groupChatRouter)
 app.use('/file', authenticate, fileRouter)
+
+app.use(express.static(path.join(__dirname, 'client', 'build')))
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'))
+})
