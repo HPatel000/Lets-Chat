@@ -9,6 +9,7 @@ const groupChatRouter = require('./routes/groupchat')
 const msgRouter = require('./routes/message')
 const { authenticate } = require('./middlewares/auth')
 const fileRouter = require('./routes/files')
+const path = require('path')
 
 const app = new express()
 const server = app.listen(5000, () => {
