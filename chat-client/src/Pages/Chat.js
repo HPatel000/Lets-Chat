@@ -181,7 +181,7 @@ const Chat = () => {
               )
             })}
       </div>
-      <div className='msg-options'>
+      {/*<div className='msg-options'>
         <Button
           variant='contained'
           component='label'
@@ -202,7 +202,7 @@ const Chat = () => {
         >
           <CodeIcon />
         </Button>
-      </div>
+      </div>*/}
       <div className='msg-send'>
         <textarea
           onChange={onMsgChange}
