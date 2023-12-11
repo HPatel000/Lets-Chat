@@ -1,21 +1,21 @@
 import axios from 'axios'
 
 export const SignIn = (json) => {
-  return axios.post('/auth/signin', json)
+  return axios.post('/api/auth/signin', json)
 }
 
 export const LogIn = (json) => {
-  return axios.post('/auth/login', json)
+  return axios.post('/api/auth/login', json)
 }
 
 export const LogOut = () => {
-  return axios.get('/auth/logout')
+  return axios.get('/api/auth/logout')
 }
 
 export const checkUserAuthentication = () => {
-  return axios.get('/auth/checkuser')
+  return axios.get('/api/auth/checkuser')
 }
 
 export const searchusers = (searchInput) => {
-  return axios.get(`/user/${String(searchInput)}`)
+  return axios.get(`/api/user/${String(searchInput)}`)
 }

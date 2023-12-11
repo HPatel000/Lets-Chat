@@ -30,12 +30,12 @@ app.use(cookieParser())
 const gfs = connectDB()
 app.set('gfs', gfs)
 
-app.use('/auth', authRouter)
-app.use('/user', userRouter)
-app.use('/chat', authenticate, chatRouter)
-app.use('/msg', authenticate, msgRouter)
-app.use('/group', authenticate, groupChatRouter)
-app.use('/file', authenticate, fileRouter)
+app.use('/api/auth', authRouter)
+app.use('/api/user', userRouter)
+app.use('/api/chat', authenticate, chatRouter)
+app.use('/api/msg', authenticate, msgRouter)
+app.use('/api/group', authenticate, groupChatRouter)
+app.use('/api/file', authenticate, fileRouter)
 
 app.use(express.static(path.join(__dirname, 'chat-client', 'build')))
 

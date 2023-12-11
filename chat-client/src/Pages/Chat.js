@@ -47,7 +47,7 @@ const Chat = () => {
   }, [chat])
 
   useEffect(() => {
-    const socket = io.connect('http://localhost:5000')
+    const socket = io.connect(process.env.URL)
     socket.on(`${chat._id}`, (payload) => {
       if (chat._id) {
         if (payload.event === 'added') {
