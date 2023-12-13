@@ -27,8 +27,7 @@ app.use(express.json())
 app.use(cors({ orgin: process.env.URL }))
 app.use(cookieParser())
 
-const gfs = connectDB()
-app.set('gfs', gfs)
+connectDB()
 
 app.use('/api/auth', authRouter)
 app.use('/api/user', userRouter)

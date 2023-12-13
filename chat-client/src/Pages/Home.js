@@ -72,7 +72,19 @@ const Home = () => {
                 <span>{chat.lastMessage.message}</span>
               </>
             ) : (
-              <span>Start a Conversation</span>
+              <>
+                {chat.lastMessage &&
+                chat.lastMessage.files &&
+                chat.lastMessage.files.length > 0 ? (
+                  <>
+                    <span>{chat.lastMessage.sender.name || 'UU'}</span>
+                    <span>{`: `}</span>
+                    <span>{chat.lastMessage.files[0].originalname}</span>
+                  </>
+                ) : (
+                  <span>Start a Conversation</span>
+                )}
+              </>
             )}
           </div>
         ))}

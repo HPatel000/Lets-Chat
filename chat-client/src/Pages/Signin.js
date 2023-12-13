@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { login } from '../GlobalState/authReducer'
 import { Link, useNavigate } from 'react-router-dom'
 import { SignIn } from '../services/user'
+import Alert from '../components/Alert'
 
 const Signin = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const [alertmsg, setAlertMsg] = useState(null)
 
   const onSignIn = async (e) => {
     e.preventDefault()
@@ -16,10 +18,22 @@ const Signin = () => {
       email: e.target.email.value,
       password: e.target.password.value,
     }
-    const res = await SignIn(json)
-    if (res.status === 200) {
-      dispatch(login(res.data.data))
-      navigate('/')
+    try {
+      const res = await SignIn(json)
+      if (res.status === 200) {
+        dispatch(login(res.data.data))
+        navigate('/')
+      }
+    } catch (e) {
+      for (const key in e.response.data.error) {
+        setAlertMsg({
+          message: `${e.response.data.error[key]}`,
+          type: 'danger',
+        })
+        setTimeout(() => {
+          setAlertMsg(null)
+        }, 10000)
+      }
     }
   }
   return (
@@ -39,6 +53,7 @@ const Signin = () => {
           Already have an account? Log In
         </Link>
       </form>
+      {alertmsg && <Alert message={alertmsg.message} type={alertmsg.type} />}
     </div>
   )
 }

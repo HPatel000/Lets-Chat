@@ -4,7 +4,7 @@ const multer = require('multer')
 const path = require('path')
 
 const storage = new GridFsStorage({
-  url: 'mongodb://127.0.0.1:27017/MERNCRUD',
+  url: process.env.MONGO_URI,
   file: (req, file) => {
     return new Promise((resolve, reject) => {
       crypto.randomBytes(16, (err, buf) => {
@@ -12,6 +12,7 @@ const storage = new GridFsStorage({
         const filename = buf.toString('hex') + path.extname(file.originalname)
         const fileInfo = {
           filename: filename,
+          originalname: file.originalname,
           bucketName: 'uploads',
         }
         resolve(fileInfo)

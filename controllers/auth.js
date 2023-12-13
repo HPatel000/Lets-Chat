@@ -52,7 +52,6 @@ exports.signin = async (req, res) => {
 
     sendTokenResponse(user, 200, res)
   } catch (error) {
-    console.error(error)
     let errors = {}
     if (error.name === 'ValidationError') {
       Object.keys(error.errors).forEach((key) => {
@@ -60,8 +59,14 @@ exports.signin = async (req, res) => {
       })
     }
     if (error.name === 'MongoServerError' && error.code === 11000) {
-      const field = error.message.includes('username') ? 'username' : 'email'
-      errors[field] = `${field} must be unique`
+      if (error.message.includes('username')) {
+        errors['username'] = 'Username not avaiable!'
+      }
+      if (error.message.includes('email')) {
+        errors['email'] = 'Email is already in use!'
+      }
+      // const field = error.message.includes('username') ? 'username' : 'email'
+      // errors[field] = `${field} must be unique`
     }
     res.status(500).json({ error: errors })
   }

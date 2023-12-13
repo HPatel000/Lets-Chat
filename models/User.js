@@ -7,7 +7,6 @@ const UserSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, 'Name is required'],
-      match: [/^[a-zA-Z0-9 ]*$/, 'special characters are not allowed'],
     },
     username: {
       type: String,
@@ -27,11 +26,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Password is required'],
       validate: {
-        validator: (v) => v.length >= 8,
+        validator: (v) => v.length >= 5,
         message: (props) =>
-          `${props.value.length} is shorter length than the minimum allowed length (8)`,
+          `${props.value.length} is shorter length than the minimum required length 5 for password`,
       },
-      maxlength: [20, 'Max length requried for password is 20'],
       select: false,
     },
   },

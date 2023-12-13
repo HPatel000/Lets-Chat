@@ -58,6 +58,7 @@ exports.saveMessage = async (req, res) => {
       req.files.forEach((file) => {
         files.push({
           filename: file.filename,
+          originalname: file.originalname,
           contentType: file.contentType,
         })
       })

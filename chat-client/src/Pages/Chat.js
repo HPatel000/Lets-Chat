@@ -208,7 +208,6 @@ const Chat = () => {
         >
           <input
             type='file'
-            accept='image/*, audio/*, video/*'
             style={{ display: 'none' }}
             onChange={onAttachment}
           />

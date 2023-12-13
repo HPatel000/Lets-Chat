@@ -297,6 +297,7 @@ exports.getUserChats = async (req, res, next) => {
           'receiver.name': 1,
           'lastMessage.sender._id': 1,
           'lastMessage.sender.name': 1,
+          'lastMessage.files': 1,
           'lastMessage._id': 1,
           'lastMessage.message': 1,
         },

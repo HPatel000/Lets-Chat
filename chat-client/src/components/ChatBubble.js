@@ -1,11 +1,12 @@
 import React from 'react'
-import { DeleteOutlineRounded } from '@mui/icons-material'
+import { DeleteOutlineRounded, Download } from '@mui/icons-material'
 import { getTimeFormate } from '../GlobalState/util'
 import { useSelector } from 'react-redux'
 import EmojiPicker from './EmojiPicker'
 import data from '@emoji-mart/data'
 import { init } from 'emoji-mart'
 import { reactMessage } from '../services/message'
+import axios from 'axios'
 
 init({ data })
 
@@ -14,6 +15,18 @@ const ChatBubble = ({ msg, onMsgDelete, isGroup }) => {
 
   const onMsgReaction = async (e) => {
     await reactMessage(msg._id, e.id)
+  }
+
+  const downloadFile = async (file) => {
+    const res = await axios.get(`/api/file/${file.filename}`)
+    console.log(res)
+    const url = window.URL.createObjectURL(new Blob([res.data]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', file.originalname)
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
   }
 
   return (
@@ -41,14 +54,29 @@ const ChatBubble = ({ msg, onMsgDelete, isGroup }) => {
               key={file.filename}
               className='chat-bubble-msg chat-bubble-file'
             >
-              {file.contentType.includes('image') && (
-                <img src={`/file/${file.filename}`} alt='Chat' />
-              )}
-              {file.contentType.includes('audio') && (
-                <audio controls src={`/file/${file.filename}`} />
-              )}
-              {file.contentType.includes('video') && (
-                <video controls src={`/file/${file.filename}`} />
+              {file.contentType.includes('image') ||
+              file.contentType.includes('audio') ||
+              file.contentType.includes('video') ? (
+                <>
+                  {file.contentType.includes('image') && (
+                    <>
+                      <img src={`/api/file/${file.filename}`} alt='Chat' />
+                    </>
+                  )}
+                  {file.contentType.includes('audio') && (
+                    <audio controls src={`/api/file/${file.filename}`} />
+                  )}
+                  {file.contentType.includes('video') && (
+                    <video controls src={`/api/file/${file.filename}`} />
+                  )}
+                </>
+              ) : (
+                <p
+                  className='chat-bubble-filename'
+                  onClick={() => downloadFile(file)}
+                >
+                  {file.originalname}
+                </p>
               )}
             </div>
           ))}
