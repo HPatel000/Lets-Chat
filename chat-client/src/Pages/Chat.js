@@ -117,10 +117,11 @@ const Chat = () => {
     const json = {
       message: msgText.trimEnd(),
     }
+    setMsgText('')
     if (chat._id) {
       const res = await saveMessage(chat._id, json)
-      if (res.data) {
-        setMsgText('')
+      if (!res.data) {
+        setMsgText(json.message)
       }
     }
   }
