@@ -38,9 +38,11 @@ const ChatBubble = ({ msg, onMsgDelete, isGroup }) => {
           : 'chat-bubble-left'
       }`}
     >
-      <div className='chat-bubble-actions'>
-        <DeleteOutlineRounded onClick={() => onMsgDelete(msg._id)} />
-      </div>
+      {msg.sender._id === state.user._id && (
+        <div className='chat-bubble-actions'>
+          <DeleteOutlineRounded onClick={() => onMsgDelete(msg._id)} />
+        </div>
+      )}
       {isGroup && (
         <div className='chat-bubble-header'>
           <small>{msg.sender.name} </small>
