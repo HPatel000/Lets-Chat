@@ -67,6 +67,12 @@ const SearchUsers = ({ multiple = false, onUserSelection }) => {
           {selectedUsers.map((user) => (
             <Chip
               label={user.username}
+              sx={{
+                '& .MuiChip-deleteIcon': {
+                  color: '#ededed',
+                },
+                color: '#ededed',
+              }}
               variant='outlined'
               onDelete={() => handleUserDelete(user)}
             />

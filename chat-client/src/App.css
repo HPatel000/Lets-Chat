@@ -5,10 +5,10 @@
 /* #272635 */
 /* #F2D0A4 */
 :root {
-  --c1: rgb(23, 23, 23);
-  --c2: rgb(68, 68, 68);
-  --c3: rgb(25, 167, 206);
-  --c4: rgb(237, 237, 237);
+  --c1: #171717;
+  --c2: #444444;
+  --c3: #19a7ce;
+  --c4: #ededed;
   --C1: 23, 23, 23;
   --C2: 68, 68, 68;
   --C3: 25, 167, 206;
@@ -480,13 +480,7 @@ em-emoji-picker {
   gap: 1rem;
 }
 
-.create-group-form .css-uoam7u-MuiButtonBase-root-MuiChip-root {
-  color: var(--c4) !important;
-}
-
-.create-group-form
-  .css-uoam7u-MuiButtonBase-root-MuiChip-root
-  .MuiChip-deleteIcon {
+.create-group-form {
   color: var(--c4) !important;
 }
 
@@ -514,21 +508,6 @@ em-emoji-picker {
   position: absolute;
   bottom: 1rem;
   right: 1rem;
-}
-
-.css-sghohy-MuiButtonBase-root-MuiButton-root {
-  min-width: unset !important;
-  padding: 0 !important;
-  color: var(--c3) !important;
-}
-
-.css-1fwudth-MuiButtonBase-root-MuiFab-root {
-  background-color: var(--c3) !important;
-}
-
-.css-1160xiw-MuiPaper-root-MuiDrawer-paper {
-  background-color: var(--c1) !important;
-  color: var(--c4) !important;
 }
 
 @keyframes alertAnimation {

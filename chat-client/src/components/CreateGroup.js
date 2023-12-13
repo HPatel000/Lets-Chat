@@ -60,7 +60,12 @@ const CreateGroup = ({ groupCreated }) => {
         </div>
       </div>
       <div className='floatingBtn'>
-        <Fab aria-label='create group' size='medium' onClick={onCreateGroup}>
+        <Fab
+          sx={{ backgroundColor: '#19a7ce' }}
+          aria-label='create group'
+          size='medium'
+          onClick={onCreateGroup}
+        >
           <GroupAddIcon />
         </Fab>
       </div>

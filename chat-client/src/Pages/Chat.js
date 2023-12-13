@@ -182,7 +182,25 @@ const Chat = () => {
               )
             })}
       </div>
-      {/*<div className='msg-options'>
+      {/* <div className='msg-options'> */}
+      {/* <Button variant='contained' component='label' className='msg-options-btn'>
+        <input
+          type='file'
+          accept='image/*, audio/*, video/*'
+          style={{ display: 'none' }}
+          onChange={onAttachment}
+        />
+        <AttachmentIcon />
+      </Button> */}
+      {/* <Button
+          variant='contained'
+          component='label'
+          className='msg-options-btn'
+        >
+          <CodeIcon />
+        </Button> */}
+      {/* </div> */}
+      <div className='msg-send'>
         <Button
           variant='contained'
           component='label'
@@ -196,15 +214,6 @@ const Chat = () => {
           />
           <AttachmentIcon />
         </Button>
-        <Button
-          variant='contained'
-          component='label'
-          className='msg-options-btn'
-        >
-          <CodeIcon />
-        </Button>
-      </div>*/}
-      <div className='msg-send'>
         <textarea
           onChange={onMsgChange}
           placeholder='Type something...'

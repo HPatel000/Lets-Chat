@@ -78,6 +78,7 @@ const Home = () => {
         ))}
         <div className='floatingBtn'>
           <Fab
+            sx={{ backgroundColor: '#19a7ce' }}
             aria-label='create group'
             size='medium'
             onClick={() => setShowCreateGroup(true)}
@@ -86,6 +87,12 @@ const Home = () => {
           </Fab>
         </div>
         <SwipeableDrawer
+          PaperProps={{
+            sx: {
+              backgroundColor: '#171717',
+              color: '#ededed',
+            },
+          }}
           anchor={'right'}
           open={showCreateGroup}
           onClose={toggleDrawer(false)}
